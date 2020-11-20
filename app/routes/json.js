@@ -4,13 +4,15 @@ var router = express.Router();
 
 /* Generate JSON file*/
 router.post('/', function (req, res, next) {
-  let JSONdata = JSON.stringify(req.body.data);
-  let fileName = req.body.file;
+  //let JSONdata = JSON.stringify(req.body.data);
+  //let fileName = req.body.file;
+  let data = req.body.data;
+  let fileName = 'test.txt';
   //Destination Path
   //let destPath = `D:\\inetpub\\wwwroot\\API\\src\\json\\${fileName}`;
 
   //Write JSON file
-  fs.writeFile(fileName, JSONdata, err => {
+  fs.writeFile(fileName, data, err => {
     if (err) {
       res.send(err)
     } else {
