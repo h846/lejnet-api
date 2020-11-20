@@ -7,7 +7,7 @@ router.post('/', function (req, res, next) {
   let JSONdata = JSON.stringify(req.body.data);
   let fileName = req.body.file;
   //Destination Path
-  let destPath = `../../src/json/${fileName}`;
+  let destPath = `D:\\inetpub\\wwwroot\\API\\src\\json\\${fileName}`;
   //File Existence Check
   try {
     fs.statSync(destPath)
