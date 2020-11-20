@@ -6,7 +6,7 @@ var router = express.Router();
 router.post('/', function (req, res, next) {
   //let JSONdata = JSON.stringify(req.body.data);
   //let fileName = req.body.file;
-  let data = req.body.data;
+  let data = String(req.body.data);
   let fileName = 'test.txt';
   //Destination Path
   //let destPath = `D:\\inetpub\\wwwroot\\API\\src\\json\\${fileName}`;
