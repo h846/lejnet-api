@@ -2,11 +2,26 @@ var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
-/* JSON file generate or retrun JSON data*/
+/* Generate JSON file*/
 router.post('/', function (req, res, next) {
   let JSONdata = JSON.stringify(req.body.data);
-  //保存先パス
-  let destPath = '';
+  let fileName = req.body.file;
+  //Destination Path
+  let destPath = `../../src/json/${fileName}`;
+  //File Existence Check
+  try {
+    fs.statSync(destPath)
+  } catch (error) {
+    if (error.code === 'ENOENT') res.send('保存先JSONファイルが存在しません')
+  }
+  //Write JSON file
+  fs.writeFile(destPath, JSONdata, err => {
+    if (err) {
+      res.send(err)
+    } else {
+      res.send('JSON更新成功\n' + JSONdata)
+    }
+  });
 
 });
 
