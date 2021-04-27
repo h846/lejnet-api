@@ -1,34 +1,47 @@
+const {
+  json
+} = require('express');
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
 /* Generate JSON file*/
+// /json?file=xxxx&data={"hoge":"fuga"}
 router.post('/', function (req, res, next) {
-  //let JSONdata = JSON.stringify(req.body.data);
-  //let fileName = req.body.file;
-  let data = String(req.body.data);
-  let fileName = 'test.txt';
-  //Destination Path
-  //let destPath = `D:\\inetpub\\wwwroot\\API\\src\\json\\${fileName}`;
-
-  //Write JSON file
-  fs.writeFile(fileName, data, err => {
-    if (err) {
-      res.send(err)
-    } else {
-      res.send('JSON更新成功\n' + JSONdata)
+  try {
+    //Check for existence of josn file
+    let fileName = `../src/json/${req.body.file}`;
+    //res.status(200).send(req.body.file);
+    if (!fs.existsSync(fileName)) {
+      res.status(404).send('The requested JSON file does NOT exist');
     }
-  });
 
-});
+    // Load json file
+    let jsonFile = JSON.parse(fs.readFileSync(fileName, 'utf8'));
 
-router.get('/', function (req, res, next) {
-  const axios = require('axios');
-  axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-    .then(function (d) {
-      res.send(d.data);
+    //Get Date & Time Now
+    let date = new Date();
+    let today = date.toLocaleString("ja");
+
+    // add a data to json file
+    jsonFile.list.unshift({
+      "date": today,
+      "text": req.body.data
     })
+    let jsonData = JSON.stringify(jsonFile);
 
+    fs.writeFile(fileName, jsonData, err => {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('更新成功')
+      }
+    });
+
+    res.status(200).send('The JSON file was created successfully.')
+  } catch (e) {
+    res.status(400).send(e)
+  }
 });
 
 module.exports = router;

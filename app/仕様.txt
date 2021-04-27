@@ -1,7 +1,0 @@
-フレームワーク: Express
-GET: http://lejnet:3000/accdb?db=xxxxx&table=xxxxx
-POST: http://lejnet:3000/accdb?db=xxxxx&sql=xxxx
-
-Windows サービス化パッケージ: Winser
-npm run install-service 開始
-npm run uninstall-service 停止
