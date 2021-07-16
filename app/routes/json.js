@@ -26,7 +26,7 @@ router.post('/', function (req, res, next) {
     // add a data to json file
     jsonFile.list.unshift({
       "date": today,
-      "text": req.body.data
+      "data": req.body.data
     })
     let jsonData = JSON.stringify(jsonFile);
 
