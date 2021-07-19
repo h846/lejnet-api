@@ -12,7 +12,7 @@ let conOracle = async (callBack) => {
       password: "nodeora",
       connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
     });
-
+    // Database Side Process
     callBack(connection);
 
   } catch (err) {
@@ -29,7 +29,7 @@ let conOracle = async (callBack) => {
 
 }
 
-//Get style number
+//Get style info
 router.get('/styles/:style_number', function (req, res, next) {
 
   conOracle(async function (con) {
@@ -45,7 +45,18 @@ router.get('/styles/:style_number', function (req, res, next) {
       result = await con.execute(sql, [], {
         outFormat: oracledb.OUT_FORMAT_OBJEC,
       });
-      res.status(200).send(result);
+
+      let metaData = "NULL";
+      metaData = result.metaData;
+
+      let rows = result.rows;
+      let obj = {};
+
+      for (let i = 0; i < metaData.length; i++) {
+        obj[String(metaData[i].name)] = String(rows[0][i]);
+      }
+
+      res.status(200).send(obj);
     } catch (err) {
       res.send("Error!!" + err);
     }
