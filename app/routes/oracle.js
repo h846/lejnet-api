@@ -1,9 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
+// for local enviroment
+try {
+  oracledb.initOracleClient({
+    libDir: 'C:\\instantclient_19_11'
+  });
+} catch (err) {
+  console.error('Whoops!');
+  console.error(err);
+  process.exit(1);
+}
 
 //Oracle DB Connection
 let conOracle = async (callBack) => {
+
   let connection;
 
   try {
@@ -16,7 +27,8 @@ let conOracle = async (callBack) => {
     callBack(connection);
 
   } catch (err) {
-    res.send('connection error occured: \n' + err);
+    console.log(err);
+    //res.send('connection error occured: \n' + err);
   } finally {
     if (connection) {
       try {
@@ -28,6 +40,11 @@ let conOracle = async (callBack) => {
   }
 
 }
+
+router.get('/test', function (req, res, next) {
+  console.log(req.headers.host);
+  res.send('it works.')
+})
 
 //Get style info
 router.get('/styles/:style_number', function (req, res, next) {
@@ -56,9 +73,9 @@ router.get('/styles/:style_number', function (req, res, next) {
         obj[String(metaData[i].name)] = String(rows[0][i]);
       }
 
-      res.status(200).send(obj);
+      res.status(200).json(obj);
     } catch (err) {
-      res.send("Error!!" + err);
+      res.send("Error occured on during connecting db!! " + err);
     }
   })
 
