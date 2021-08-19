@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
 // for local enviroment
+/*
 try {
   oracledb.initOracleClient({
     libDir: 'C:\\instantclient_19_11'
@@ -11,7 +12,7 @@ try {
   console.error(err);
   process.exit(1);
 }
-
+*/
 //Oracle DB Connection
 let conOracle = async (callBack) => {
 
@@ -41,46 +42,77 @@ let conOracle = async (callBack) => {
 
 }
 
-router.get('/test', function (req, res, next) {
-  console.log(req.headers.host);
-  res.send('it works.')
-})
-
-//Get style info
-router.get('/styles/:style_number', function (req, res, next) {
+//Get AR INVOICE
+router.post('/ar_invoice_rec/', function (req, res, next) {
+  let cust_id = req.body.cust_id;
+  let isBalanceOnly = req.body.blnc_only;
+  //res.send(cust_id)
+  if (cust_id == undefined) {
+    res.status(404).send('顧客番号をパラメータに設定してください。')
+    return;
+  }
+  let result = [];
+  let sql = `SELECT * FROM AR_INVOICE_REC WHERE ARI_CUSTOMER_ID = ${cust_id}`;
+  if (isBalanceOnly) {
+    sql = sql + ` and ARI_C_BALANCE <> 0`;
+  }
+  sql = sql + ` ORDER BY ARI_TRANS_DATE DESC`;
 
   conOracle(async function (con) {
-    let sty_num = req.params.style_number;
-    let sql, result;
+
+    let data = await con.execute(sql, [], {});
+    let cols = data.metaData;
+    let rows = data.rows;
+    let obj = {}
+    for (let k = 0; k < rows.length; k++) {
+      for (let i = 0; i < cols.length; i++) {
+        obj[String(cols[i].name)] = String(rows[k][i]);
+      }
+      result.push({
+        ...obj
+      });
+    }
+    res.send(result);
+  })
+});
+
+//Get style info
+router.post('/styles/', function (req, res, next) {
+
+  conOracle(async function (con) {
+    let sty_num = req.body.style_number;
+
+    let sql = 'SELECT * FROM INT_STY_MST';
+    sql = sty_num === 'all' ? sql : sql + ` WHERE STY_NBR = 'JP${sty_num}F'`;
+    let result;
 
     try {
-      if (sty_num == 'all') {
-        sql = 'SELECT * FROM INT_STY_MST';
-      } else {
-        sql = `SELECT * FROM INT_STY_MST WHERE STY_NBR = 'JP${sty_num}F'`;
-      }
-      result = await con.execute(sql, [], {
-        //outFormat: oracledb.OUT_FORMAT_OBJECT,
-      });
-
-      let metaData = "NULL";
-      metaData = result.metaData;
-
+      result = await con.execute(sql, [], {});
+      let cols = result.metaData;
       let rows = result.rows;
       let obj = {};
-
-      for (let i = 0; i < metaData.length; i++) {
-        obj[String(metaData[i].name)] = String(rows[0][i]);
+      for (let i = 0; i < cols.length; i++) {
+        obj[String(cols[i].name)] = String(rows[0][i]);
       }
-
       res.status(200).json(obj);
     } catch (err) {
-      res.send("Error occured on during connecting db!! " + err);
+      if (err.message == "Cannot read property '0' of undefined") {
+        res.status(404).send('Style Number NOT Found');
+      } else {
+        res.send(err)
+      }
     }
   })
 
 });
 
-router.post('/', function (req, res, next) {})
+router.post('/', function (req, res, next) {
+  res.status(200).send('Oracle API')
+})
+
+router.post('/test', function (req, res, next) {
+  let body = req.body.test;
+  res.send("this is respons from web api... " + body)
+})
 
 module.exports = router;
