@@ -1,18 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
-// for local enviroment
-/*
-try {
-  oracledb.initOracleClient({
-    libDir: 'C:\\instantclient_19_11'
-  });
-} catch (err) {
-  console.error('Whoops!');
-  console.error(err);
-  process.exit(1);
-}
-*/
+
 //Oracle DB Connection
 let conOracle = async (callBack) => {
 
@@ -105,6 +94,67 @@ router.post('/styles/', function (req, res, next) {
   })
 
 });
+
+//Get Product Image and color
+router.post('/img_clr/', function (req, res, next) {
+  let prd_num = req.body.product_number;
+  conOracle(async function (con) {
+    let sql = `SELECT * FROM INT_IMG_MST IMG LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE WHERE IMG.PRD_NBR = 'JP${prd_num}F' AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') ORDER BY IMG.CLR_CODE DESC`;
+    let result = [];
+    try {
+      let data = await con.execute(sql, [], {});
+      let cols = data.metaData;
+      let rows = data.rows;
+      let obj = {}
+      for (let k = 0; k < rows.length; k++) {
+        for (let i = 0; i < cols.length; i++) {
+          obj[String(cols[i].name)] = String(rows[k][i]);
+        }
+        result.push({
+          ...obj
+        });
+      }
+      res.send(result);
+    } catch (err) {
+      if (err.message == "Cannot read property '0' of undefined") {
+        res.status(404).send('Product Number NOT Found');
+      } else {
+        res.send(err)
+      }
+    }
+  })
+})
+
+// Get SKU, Price, Inventory count from Style number.
+router.post('/prc_inv/', function (req, res, next) {
+  let style_num = req.body.style_number;
+  conOracle(async function (con) {
+    let sql = `SELECT * FROM AFL_PRC_INV WHERE STY = ${style_num}`;
+    let result = [];
+    try {
+      let data = await con.execute(sql, [], {});
+      let cols = data.metaData;
+      let rows = data.rows;
+      let obj = {}
+      for (let k = 0; k < rows.length; k++) {
+        for (let i = 0; i < cols.length; i++) {
+          obj[String(cols[i].name)] = String(rows[k][i]);
+        }
+        result.push({
+          ...obj
+        });
+      }
+      res.send(result);
+    } catch (err) {
+      if (err.message == "Cannot read property '0' of undefined") {
+        res.status(404).send('Style Number NOT Found');
+      } else {
+        res.send(err)
+      }
+    }
+
+  })
+})
 
 router.post('/', function (req, res, next) {
   res.status(200).send('Oracle API')
