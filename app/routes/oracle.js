@@ -44,8 +44,9 @@ router.post('/empl/', function (req, res, next) {
     e.HE_FRSN_JP FIRST_NAME_JP, \
     e.HE_LSTN_KN LAST_NAME_KANA, \
     e.HE_FRSN_KN FIRST_NAME_KANA, \
-    d.ID_DPT_NAM DEPT, \
-    d.ID_DPT_NAM_JP DEPT_JP, \
+    e.HE_DEP_ID DEPT_ID, \
+    d.ID_DPT_NAM DEPT_NAME, \
+    d.ID_DPT_NAM_JP DEPT_NAME_JP, \
     e.HE_POSITION POSITION, \
     e.HE_EMAIL EMAIL, \
     e.HE_IMG IMAGE_FILE \
