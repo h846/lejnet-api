@@ -31,6 +31,46 @@ let conOracle = async (callBack) => {
 
 }
 
+//Get Employee Info
+router.post('/empl/', function (req, res, next) {
+  conOracle(async function (con) {
+    let sql =
+      "SELECT \
+    e.HE_WIN_ID WIN_ID, \
+    e.HE_NBR EMP_NUMBER, \
+    e.HE_LSTN_EN LAST_NAME_EN, \
+    e.HE_FRSN_EN FIRST_NAME_EN, \
+    e.HE_LSTN_JP LAST_NAME_JP, \
+    e.HE_FRSN_JP FIRST_NAME_JP, \
+    e.HE_LSTN_KN LAST_NAME_KANA, \
+    e.HE_FRSN_KN FIRST_NAME_KANA, \
+    d.ID_DPT_NAM DEPT, \
+    d.ID_DPT_NAM_JP DEPT_JP, \
+    e.HE_POSITION POSITION, \
+    e.HE_EMAIL EMAIL, \
+    e.HE_IMG IMAGE_FILE \
+    FROM HR_EMPL e \
+    LEFT JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
+    WHERE e.HE_STATUS = 1";
+
+    let data = await con.execute(sql, [], {});
+    let cols = data.metaData;
+    let rows = data.rows;
+    let obj = {},
+      result = [];
+
+    for (let k = 0; k < rows.length; k++) {
+      for (let i = 0; i < cols.length; i++) {
+        obj[String(cols[i].name)] = String(rows[k][i]);
+      }
+      result.push({
+        ...obj
+      });
+    }
+    res.send(result);
+  });
+})
+
 //Get AR INVOICE
 router.post('/ar_invoice_rec/', function (req, res, next) {
   let cust_id = req.body.cust_id;
@@ -99,7 +139,13 @@ router.post('/styles/', function (req, res, next) {
 router.post('/img_clr/', function (req, res, next) {
   let prd_num = req.body.product_number;
   conOracle(async function (con) {
-    let sql = `SELECT * FROM INT_IMG_MST IMG LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE WHERE IMG.PRD_NBR = 'JP${prd_num}F' AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') ORDER BY IMG.CLR_CODE DESC`;
+    let sql =
+      `SELECT * FROM INT_IMG_MST IMG \
+      LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE \
+      WHERE IMG.PRD_NBR = 'JP${prd_num}F' \
+      AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') \
+      ORDER BY IMG.CLR_CODE DESC`;
+
     let result = [];
     try {
       let data = await con.execute(sql, [], {});
