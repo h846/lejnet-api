@@ -1,41 +1,54 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
+/*
+router.post('', function (req, res, next) {
 
-//Oracle DB Connection
-let conOracle = async (callBack) => {
+  // MY CODE HERE
 
-  let connection;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+*/
 
-  try {
-    connection = await oracledb.getConnection({
-      user: "nodeora",
-      password: "nodeora",
-      connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
-    });
-    // Database Side Process
-    callBack(connection);
+/*
+  MONO GROUP and ATTACHMENT ID
+*/
+router.post('/monog', function (req, res, next) {
+  let sty_num = req.body.style_number;
+  let sql = `SELECT \
+  SKU.STY_NBR, \
+  SKU.MONO_GRP_CODE, \
+  MATT.NAME_JP, \
+  MATT.DESC_JP, \
+  MATT.IMG_PATH, \
+  MLOC.ATTACHMENT_ID \
+  FROM INT_MONO_ATTACHMENT MATT \
+  INNER JOIN (INT_SKU_MST SKU INNER JOIN INT_MONO_LOC_GRP MLOC ON SKU.MONO_GRP_CODE = MLOC.GROUP_ID) \
+  ON MLOC.ATTACHMENT_ID = MATT.ATTACHMENT_ID \
+  WHERE SKU.STY_NBR=${sty_num} \
+  GROUP BY SKU.STY_NBR, SKU.MONO_GRP_CODE, MATT.NAME_JP, MATT.DESC_JP, MATT.IMG_PATH, MLOC.ATTACHMENT_ID \
+  ORDER BY ATTACHMENT_ID ASC`;
 
-  } catch (err) {
-    console.log(err);
-    //res.send('connection error occured: \n' + err);
-  } finally {
-    if (connection) {
-      try {
-        await connection.close();
-      } catch (err) {
-        res.send(err);
-      }
-    }
-  }
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+/*
+  Get Customer Info
+*/
+router.post('/customer', function (req, res, next) {
+  let cust_id = req.body.cust_id;
+  let sql = `SELECT * FROM CUSTOMER_MASTER WHERE CM_CUSTOMER_ID = ${cust_id}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 
-}
-
-//Get Employee Info
+/*
+  Get Employee Info
+*/
 router.post('/empl/', function (req, res, next) {
-  conOracle(async function (con) {
-    let sql =
-      "SELECT \
+  let sql =
+    "SELECT \
     e.HE_WIN_ID WIN_ID, \
     e.HE_NBR EMP_NUMBER, \
     e.HE_LSTN_EN LAST_NAME_EN, \
@@ -54,157 +67,132 @@ router.post('/empl/', function (req, res, next) {
     LEFT JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
     WHERE e.HE_STATUS = 1";
 
-    let data = await con.execute(sql, [], {});
-    let cols = data.metaData;
-    let rows = data.rows;
-    let obj = {},
-      result = [];
-
-    for (let k = 0; k < rows.length; k++) {
-      for (let i = 0; i < cols.length; i++) {
-        obj[String(cols[i].name)] = String(rows[k][i]);
-      }
-      result.push({
-        ...obj
-      });
-    }
-    res.send(result);
-  });
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
 })
-
-//Get AR INVOICE
+/*
+  Get AR INVOICE
+*/
 router.post('/ar_invoice_rec/', function (req, res, next) {
   let cust_id = req.body.cust_id;
   let isBalanceOnly = req.body.blnc_only;
-  //res.send(cust_id)
   if (cust_id == undefined) {
     res.status(404).send('顧客番号をパラメータに設定してください。')
     return;
   }
-  let result = [];
   let sql = `SELECT * FROM AR_INVOICE_REC WHERE ARI_CUSTOMER_ID = ${cust_id}`;
   if (isBalanceOnly) {
     sql = sql + ` and ARI_C_BALANCE <> 0`;
   }
   sql = sql + ` ORDER BY ARI_TRANS_DATE DESC`;
 
-  conOracle(async function (con) {
-
-    let data = await con.execute(sql, [], {});
-    let cols = data.metaData;
-    let rows = data.rows;
-    let obj = {}
-    for (let k = 0; k < rows.length; k++) {
-      for (let i = 0; i < cols.length; i++) {
-        obj[String(cols[i].name)] = String(rows[k][i]);
-      }
-      result.push({
-        ...obj
-      });
-    }
-    res.send(result);
-  })
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
 });
 
-//Get style info
+/*
+  Get Style Information
+*/
 router.post('/styles/', function (req, res, next) {
 
-  conOracle(async function (con) {
-    let sty_num = req.body.style_number;
+  let sty_num = req.body.style_number;
+  let sql = 'SELECT * FROM INT_STY_MST';
+  sql = sty_num === 'all' ? sql : sql + ` WHERE STY_NBR = 'JP${sty_num}F'`;
 
-    let sql = 'SELECT * FROM INT_STY_MST';
-    sql = sty_num === 'all' ? sql : sql + ` WHERE STY_NBR = 'JP${sty_num}F'`;
-    let result;
-
-    try {
-      result = await con.execute(sql, [], {});
-      let cols = result.metaData;
-      let rows = result.rows;
-      let obj = {};
-      for (let i = 0; i < cols.length; i++) {
-        obj[String(cols[i].name)] = String(rows[0][i]);
-      }
-      res.status(200).json(obj);
-    } catch (err) {
-      if (err.message == "Cannot read property '0' of undefined") {
-        res.status(404).send('Style Number NOT Found');
-      } else {
-        res.send(err)
-      }
-    }
-  })
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
 
 });
 
-//Get Product Image and color
+/*
+  Get Product Image and color
+*/
 router.post('/img_clr/', function (req, res, next) {
+
   let prd_num = req.body.product_number;
-  conOracle(async function (con) {
-    let sql =
-      `SELECT * FROM INT_IMG_MST IMG \
+  let sql =
+    `SELECT * FROM INT_IMG_MST IMG \
       LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE \
       WHERE IMG.PRD_NBR = 'JP${prd_num}F' \
       AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') \
       ORDER BY IMG.CLR_CODE DESC`;
 
-    let result = [];
-    try {
-      let data = await con.execute(sql, [], {});
-      let cols = data.metaData;
-      let rows = data.rows;
-      let obj = {}
-      for (let k = 0; k < rows.length; k++) {
-        for (let i = 0; i < cols.length; i++) {
-          obj[String(cols[i].name)] = String(rows[k][i]);
-        }
-        result.push({
-          ...obj
-        });
-      }
-      res.send(result);
-    } catch (err) {
-      if (err.message == "Cannot read property '0' of undefined") {
-        res.status(404).send('Product Number NOT Found');
-      } else {
-        res.send(err)
-      }
-    }
-  })
-})
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
 
-// Get SKU, Price, Inventory count from Style number.
+})
+/*
+  Get SKU, Price, Inventory count from Style number.
+*/
 router.post('/prc_inv/', function (req, res, next) {
+
   let style_num = req.body.style_number;
-  conOracle(async function (con) {
-    let sql = `SELECT * FROM AFL_PRC_INV WHERE STY = ${style_num}`;
-    let result = [];
+  let sql = `SELECT * FROM AFL_PRC_INV WHERE STY = ${style_num}`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+})
+/*
+  API Response Test (Get Method).
+*/
+router.get('/', function (req, res, next) {
+  res.status(200).send('It works')
+})
+
+/*
+  Oracle Connection Class
+*/
+class Orcl {
+
+  constructor(sql) {
+    this._sql = sql;
+  }
+
+  async connect(res) {
+    let con;
     try {
-      let data = await con.execute(sql, [], {});
-      let cols = data.metaData;
-      let rows = data.rows;
-      let obj = {}
-      for (let k = 0; k < rows.length; k++) {
-        for (let i = 0; i < cols.length; i++) {
-          obj[String(cols[i].name)] = String(rows[k][i]);
+      let con = await oracledb.getConnection({
+        user: "nodeora",
+        password: "nodeora",
+        connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
+      });
+      // Database Side Process
+      let result = [];
+      try {
+        let data = await con.execute(this._sql, [], {});
+        let cols = data.metaData;
+        let rows = data.rows;
+        let obj = {}
+        for (let k = 0; k < rows.length; k++) {
+          for (let i = 0; i < cols.length; i++) {
+            obj[String(cols[i].name)] = String(rows[k][i]);
+          }
+          result.push({
+            ...obj
+          });
         }
-        result.push({
-          ...obj
-        });
+        res.send(result);
+      } catch (err) {
+        if (err.message == "Cannot read property '0' of undefined") {
+          res.status(404).send('Parameter Number NOT Found');
+        } else {
+          res.send(err)
+        }
       }
-      res.send(result);
     } catch (err) {
-      if (err.message == "Cannot read property '0' of undefined") {
-        res.status(404).send('Style Number NOT Found');
-      } else {
-        res.send(err)
+      console.log(err);
+      res.send('connection error occured: \n' + err);
+    } finally {
+      if (con) {
+        try {
+          await con.close();
+        } catch (err) {
+          res.send(err);
+        }
       }
     }
-
-  })
-})
-
-router.get('/', function (req, res, next) {
-  res.status(200).send('Oracle API')
-})
+  }
+}
 
 module.exports = router;
