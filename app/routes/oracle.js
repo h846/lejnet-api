@@ -1,11 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
-/*
+/* -- TEMPLATE --
 router.post('', function (req, res, next) {
-
   // MY CODE HERE
-
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -14,7 +12,7 @@ router.post('', function (req, res, next) {
 /*
   MONO GROUP and ATTACHMENT ID
 */
-router.post('/monog', function (req, res, next) {
+router.post('/monog_atcid', function (req, res, next) {
   let sty_num = req.body.style_number;
   let sql = `SELECT \
   SKU.STY_NBR, \
@@ -24,10 +22,17 @@ router.post('/monog', function (req, res, next) {
   MATT.IMG_PATH, \
   MLOC.ATTACHMENT_ID \
   FROM INT_MONO_ATTACHMENT MATT \
-  INNER JOIN (INT_SKU_MST SKU INNER JOIN INT_MONO_LOC_GRP MLOC ON SKU.MONO_GRP_CODE = MLOC.GROUP_ID) \
+  INNER JOIN (INT_SKU_MST SKU \
+  INNER JOIN INT_MONO_LOC_GRP MLOC ON SKU.MONO_GRP_CODE = MLOC.GROUP_ID) \
   ON MLOC.ATTACHMENT_ID = MATT.ATTACHMENT_ID \
   WHERE SKU.STY_NBR=${sty_num} \
-  GROUP BY SKU.STY_NBR, SKU.MONO_GRP_CODE, MATT.NAME_JP, MATT.DESC_JP, MATT.IMG_PATH, MLOC.ATTACHMENT_ID \
+  GROUP BY \
+  SKU.STY_NBR, \
+  SKU.MONO_GRP_CODE, \
+  MATT.NAME_JP, \
+  MATT.DESC_JP, \
+  MATT.IMG_PATH, \
+  MLOC.ATTACHMENT_ID \
   ORDER BY ATTACHMENT_ID ASC`;
 
   let oracle = new Orcl(sql);
@@ -47,8 +52,10 @@ router.post('/customer', function (req, res, next) {
   Get Employee Info
 */
 router.post('/empl/', function (req, res, next) {
+  let win_id = req.body.win_id;
+
   let sql =
-    "SELECT \
+    `SELECT \
     e.HE_WIN_ID WIN_ID, \
     e.HE_NBR EMP_NUMBER, \
     e.HE_LSTN_EN LAST_NAME_EN, \
@@ -65,7 +72,7 @@ router.post('/empl/', function (req, res, next) {
     e.HE_IMG IMAGE_FILE \
     FROM HR_EMPL e \
     LEFT JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
-    WHERE e.HE_STATUS = 1";
+    WHERE e.HE_STATUS = 1 AND e.HE_WIN_ID = '${win_id}'`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
