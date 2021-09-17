@@ -9,6 +9,40 @@ router.post('', function (req, res, next) {
 })
 */
 
+// 
+router.post('', function (req, res, next) {
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+/*
+router.post('/mono_type', function (req, res, next) {
+  let atcid = req.body.atc_id;
+  let str = '';
+  // Single or Multi?
+  if (atcid.indexOf(',') == -1) { // Single
+    str = `= ${atcid}`;
+  } else { // Multi
+    str = `IN (${atcid})`;
+  }
+  let sql = `SELECT \
+  MTYPE.ATTACHMENT_ID, \
+  MTYPE.TYPE_ID, \
+  MTYPE.DESC_JP, \
+  MTYPE.IMG_PATH, \
+  MTYPE.MIN_LENGTH, \
+  MTYPE.MAX_LENGTH, \
+  MTYPE.PRICE, \
+  MATT.THREAD_CLR_FLG, \
+  MATT.ENTRY_BOX_FLG \
+  FROM (INT_MONO_ATTACHMENT MATT \
+  INNER JOIN INT_MONO_TYPE MTYPE ON MATT.ATTACHMENT_ID = MTYPE.ATTACHMENT_ID) \
+  WHERE MATT.ATTACHMENT_ID ${str} AND MTYPE.STATUS <> 9 \
+  ORDER BY MTYPE.TYPE_ID ASC`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+*/
 /*
   MONO GROUP and ATTACHMENT ID
 */
@@ -70,10 +104,8 @@ router.post('/empl/', function (req, res, next) {
     e.HE_POSITION POSITION, \
     e.HE_EMAIL EMAIL, \
     e.HE_IMG IMAGE_FILE \
-    FROM HR_EMPL e \
-    LEFT JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
+    FROM HR_EMPL e, ISSUP_DPT d\
     WHERE e.HE_STATUS = 1 AND e.HE_WIN_ID = '${win_id}'`;
-
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
