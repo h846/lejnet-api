@@ -8,14 +8,53 @@ router.post('', function (req, res, next) {
   oracle.connect(res);
 })
 */
-
-// 
-router.post('', function (req, res, next) {
-
+//Lead Time
+router.post('/lead_time', function (req, res, next) {
+  let zip_code = req.body.zip_code;
+  let sql = `SELECT * FROM CS_SAGAWA_LT WHERE ZIP = ${zip_code}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-/*
+
+// Taiwa-Shiki
+router.post('/taiwa_shiki', function (req, res, next) {
+  let sty = req.body.style_number;
+  let sql = `SELECT \
+  SKU.STY, \
+  REC.MI_SEQ_NUM, \
+  REC.MI_LINE_IDX, \
+  REC.MI_LINES \
+  FROM \
+  SKU_MST SKU, \
+  MISC_INFO_REC REC \
+  WHERE SKU.STY = '${sty}' AND \
+  SKU.P_INT_NUM = REC.MI_INTERNAL_NUM \
+  ORDER BY REC.MI_SEQ_NUM, REC.MI_LINE_IDX`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+router.post('/mono_clr', function (req, res, next) {
+  let sql = "SELECT * FROM INT_MONO_THREAD_COLOR WHERE STATUS <> 9";
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+//mono location
+router.post('/mono_loc', function (req, res, next) {
+  let atcid = req.body.atc_id;
+  let monogrp = req.body.mono_grp;
+  let sql = `SELECT MLOC.LOCATION_ID, \
+  MLOC.ATTACHMENT_ID, \
+  LOCA.DESC_JP, \
+  LOCA.IMG_PATH \
+  FROM (INT_MONO_LOC_GRP MLOC INNER JOIN INT_MONO_LOCATION LOCA ON (MLOC.LOCATION_ID = LOCA.LOCATION_ID)) \
+  WHERE MLOC.ATTACHMENT_ID = ${atcid} AND MLOC.GROUP_ID = ${monogrp}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+// mono type
 router.post('/mono_type', function (req, res, next) {
   let atcid = req.body.atc_id;
   let str = '';
@@ -42,7 +81,6 @@ router.post('/mono_type', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-*/
 /*
   MONO GROUP and ATTACHMENT ID
 */
@@ -163,7 +201,7 @@ router.post('/img_clr/', function (req, res, next) {
 /*
   Get SKU, Price, Inventory count from Style number.
 */
-router.post('/prc_inv/', function (req, res, next) {
+router.post('/prc_inv', function (req, res, next) {
 
   let style_num = req.body.style_number;
   let sql = `SELECT * FROM AFL_PRC_INV WHERE STY = ${style_num}`;
@@ -225,6 +263,7 @@ class Orcl {
     } finally {
       if (con) {
         try {
+          console.log("it works");
           await con.close();
         } catch (err) {
           res.send(err);
