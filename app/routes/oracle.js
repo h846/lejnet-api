@@ -33,7 +33,7 @@ router.post('/taiwa_shiki', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
+//mono color
 router.post('/mono_clr', function (req, res, next) {
   let sql = "SELECT * FROM INT_MONO_THREAD_COLOR WHERE STATUS <> 9";
   let oracle = new Orcl(sql);
