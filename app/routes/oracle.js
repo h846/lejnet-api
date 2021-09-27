@@ -229,7 +229,7 @@ class Orcl {
   async connect(res) {
     let con;
     try {
-      let con = await oracledb.getConnection({
+      con = await oracledb.getConnection({
         user: "nodeora",
         password: "nodeora",
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
