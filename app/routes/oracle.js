@@ -3,20 +3,23 @@ var router = express.Router();
 var oracledb = require('oracledb');
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
-  // MY CODE HERE
+  let sql = ``;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
 */
-//Lead Time
+/*
+  Lead Time
+*/
 router.post('/lead_time', function (req, res, next) {
   let zip_code = req.body.zip_code;
   let sql = `SELECT * FROM CS_SAGAWA_LT WHERE ZIP = ${zip_code}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-// Taiwa-Shiki
+/*
+  Taiwa-Shiki
+*/
 router.post('/taiwa_shiki', function (req, res, next) {
   let sty = req.body.style_number;
   let sql = `SELECT \
@@ -33,14 +36,17 @@ router.post('/taiwa_shiki', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-//mono color
+/*
+  Mono color
+*/
 router.post('/mono_clr', function (req, res, next) {
   let sql = "SELECT * FROM INT_MONO_THREAD_COLOR WHERE STATUS <> 9";
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-//mono location
+/*
+  Mono location
+*/
 router.post('/mono_loc', function (req, res, next) {
   let atcid = req.body.atc_id;
   let monogrp = req.body.mono_grp;
@@ -53,8 +59,9 @@ router.post('/mono_loc', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-// mono type
+/*
+  Mono type
+*/
 router.post('/mono_type', function (req, res, next) {
   let atcid = req.body.atc_id;
   let str = '';
@@ -119,7 +126,6 @@ router.post('/customer', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
 /*
   Get Employee Info
 */
@@ -229,7 +235,7 @@ class Orcl {
   async connect(res) {
     let con;
     try {
-      let con = await oracledb.getConnection({
+      con = await oracledb.getConnection({
         user: "nodeora",
         password: "nodeora",
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
@@ -252,7 +258,7 @@ class Orcl {
         res.send(result);
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
-          res.status(404).send('Parameter Number NOT Found');
+          res.status(404).send('The specified parameter does not exist.');
         } else {
           res.send(err)
         }
@@ -263,7 +269,6 @@ class Orcl {
     } finally {
       if (con) {
         try {
-          console.log("it works");
           await con.close();
         } catch (err) {
           res.send(err);
