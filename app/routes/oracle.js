@@ -148,7 +148,7 @@ router.post('/empl/', function (req, res, next) {
     e.HE_POSITION POSITION, \
     e.HE_EMAIL EMAIL, \
     e.HE_IMG IMAGE_FILE \
-    FROM HR_EMPL e, ISSUP_DPT d\
+    FROM HR_EMPL e INNER JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
     WHERE e.HE_STATUS = 1 AND e.HE_WIN_ID = '${win_id}'`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
