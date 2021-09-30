@@ -50,12 +50,12 @@ router.post('/mono_clr', function (req, res, next) {
 router.post('/mono_loc', function (req, res, next) {
   let atcid = req.body.atc_id;
   let monogrp = req.body.mono_grp;
-
+  let str;
   // Single or Multi?
   if (atcid.indexOf(',') == -1) { // Single
     str = `= ${atcid}`;
   } else { // Multi
-    str = `IN (${atcid})`;
+    str = `IN(${atcid})`;
   }
 
   let sql = `SELECT MLOC.LOCATION_ID, \
@@ -63,7 +63,7 @@ router.post('/mono_loc', function (req, res, next) {
   LOCA.DESC_JP, \
   LOCA.IMG_PATH \
   FROM (INT_MONO_LOC_GRP MLOC INNER JOIN INT_MONO_LOCATION LOCA ON (MLOC.LOCATION_ID = LOCA.LOCATION_ID)) \
-  WHERE MLOC.ATTACHMENT_ID ${atcid} AND MLOC.GROUP_ID = ${monogrp}`;
+  WHERE MLOC.ATTACHMENT_ID ${str} AND MLOC.GROUP_ID = ${monogrp}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
