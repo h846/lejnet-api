@@ -3,20 +3,23 @@ var router = express.Router();
 var oracledb = require('oracledb');
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
-  // MY CODE HERE
+  let sql = ``;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
 */
-//Lead Time
+/*
+  Lead Time
+*/
 router.post('/lead_time', function (req, res, next) {
   let zip_code = req.body.zip_code;
   let sql = `SELECT * FROM CS_SAGAWA_LT WHERE ZIP = ${zip_code}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-// Taiwa-Shiki
+/*
+  Taiwa-Shiki
+*/
 router.post('/taiwa_shiki', function (req, res, next) {
   let sty = req.body.style_number;
   let sql = `SELECT \
@@ -33,28 +36,40 @@ router.post('/taiwa_shiki', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-//mono color
+/*
+  Mono color
+*/
 router.post('/mono_clr', function (req, res, next) {
   let sql = "SELECT * FROM INT_MONO_THREAD_COLOR WHERE STATUS <> 9";
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-//mono location
+/*
+  Mono location
+*/
 router.post('/mono_loc', function (req, res, next) {
   let atcid = req.body.atc_id;
   let monogrp = req.body.mono_grp;
+  let str;
+  // Single or Multi?
+  if (atcid.indexOf(',') == -1) { // Single
+    str = `= ${atcid}`;
+  } else { // Multi
+    str = `IN(${atcid})`;
+  }
+
   let sql = `SELECT MLOC.LOCATION_ID, \
   MLOC.ATTACHMENT_ID, \
   LOCA.DESC_JP, \
   LOCA.IMG_PATH \
   FROM (INT_MONO_LOC_GRP MLOC INNER JOIN INT_MONO_LOCATION LOCA ON (MLOC.LOCATION_ID = LOCA.LOCATION_ID)) \
-  WHERE MLOC.ATTACHMENT_ID = ${atcid} AND MLOC.GROUP_ID = ${monogrp}`;
+  WHERE MLOC.ATTACHMENT_ID ${str} AND MLOC.GROUP_ID = ${monogrp}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
-// mono type
+/*
+  Mono type
+*/
 router.post('/mono_type', function (req, res, next) {
   let atcid = req.body.atc_id;
   let str = '';
@@ -119,7 +134,6 @@ router.post('/customer', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
-
 /*
   Get Employee Info
 */
@@ -142,7 +156,7 @@ router.post('/empl/', function (req, res, next) {
     e.HE_POSITION POSITION, \
     e.HE_EMAIL EMAIL, \
     e.HE_IMG IMAGE_FILE \
-    FROM HR_EMPL e, ISSUP_DPT d\
+    FROM HR_EMPL e INNER JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
     WHERE e.HE_STATUS = 1 AND e.HE_WIN_ID = '${win_id}'`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
@@ -252,7 +266,7 @@ class Orcl {
         res.send(result);
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
-          res.status(404).send('Parameter Number NOT Found');
+          res.status(404).send('The specified parameter does not exist.');
         } else {
           res.send(err)
         }
@@ -263,7 +277,7 @@ class Orcl {
     } finally {
       if (con) {
         try {
-          console.log("it works");
+          console.log("it works")
           await con.close();
         } catch (err) {
           res.send(err);
