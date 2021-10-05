@@ -8,6 +8,16 @@ router.post('', function (req, res, next) {
   oracle.connect(res);
 })
 */
+
+/*
+  Mono API
+*/
+router.post('/mono', function (req, res, next) {
+  let sty_nbr = req.body.style_number;
+  let sql = `SELECT * FROM LEJ.V_CS_MONO_INFO WHERE STY_NBR = ${sty_nbr}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /*
   Lead Time
 */
@@ -36,6 +46,7 @@ router.post('/taiwa_shiki', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+
 /*
   Mono color
 */
@@ -46,7 +57,6 @@ router.post('/mono_clr', function (req, res, next) {
 })
 /*
   Mono location
-*/
 router.post('/mono_loc', function (req, res, next) {
   let atcid = req.body.atc_id;
   let monogrp = req.body.mono_grp;
@@ -67,9 +77,9 @@ router.post('/mono_loc', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+*/
 /*
   Mono type
-*/
 router.post('/mono_type', function (req, res, next) {
   let atcid = req.body.atc_id;
   let str = '';
@@ -96,9 +106,9 @@ router.post('/mono_type', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+*/
 /*
   MONO GROUP and ATTACHMENT ID
-*/
 router.post('/monog_atcid', function (req, res, next) {
   let sty_num = req.body.style_number;
   let sql = `SELECT \
@@ -125,6 +135,7 @@ router.post('/monog_atcid', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+*/
 /*
   Get Customer Info
 */
