@@ -30,7 +30,11 @@ router.post('/rg_history', function (req, res, next) {
 /* Get Catalog Page*/
 router.post('/cat_page', function (req, res, next) {
   let sty_num = req.body.style_number;
-  let sql = `SELECT * FROM CSNET.CS_CAT_PAGE WHERE STYLE_NO = ${sty_num}`;
+  let sql = `SELECT * FROM \
+  CSNET.cs_cat_page WHERE style_no = ${sty_num} \
+  AND online_cat = 1 \
+  ORDER BY ID DESC`;
+  
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -151,8 +155,11 @@ router.post('/ar_invoice_rec/', function (req, res, next) {
 router.post('/styles/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
-  let sql = 'SELECT * FROM INT_STY_MST';
-  sql = sty_num === 'all' ? sql : sql + ` WHERE STY_NBR = 'JP${sty_num}F'`;
+  let sql = `SELECT * FROM INT_PRD_STY PRD, INT_STY_MST STY \
+  WHERE \
+  STY.STY_NBR = 'JP${sty_num}F' AND \
+  PRD.PRD_NBR = 'JP${sty_num}F' AND \
+  PRD.STY_NBR = '${sty_num}'`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
@@ -164,13 +171,15 @@ router.post('/styles/', function (req, res, next) {
 */
 router.post('/img_clr/', function (req, res, next) {
 
-  let prd_num = req.body.product_number;
-  let sql =
-    `SELECT * FROM INT_IMG_MST IMG \
-      LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE \
-      WHERE IMG.PRD_NBR = 'JP${prd_num}F' \
-      AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') \
-      ORDER BY IMG.CLR_CODE DESC`;
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM \
+  INT_PRD_STY PRD, \
+  INT_IMG_MST IMG, \
+  CLR_MST CLR \
+  WHERE PRD.PRD_NBR = IMG.PRD_NBR AND \
+  IMG.CLR_CODE = CLR.CLR_CODE AND \
+  (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
+  PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
