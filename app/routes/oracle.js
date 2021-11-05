@@ -9,6 +9,12 @@ router.post('', function (req, res, next) {
 })
 */
 
+/* Get Campaign Data */
+router.post('/camp_data', function (req, res, next) {
+  let sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /* Order History for Rakugae */
 router.post('/rg_history', function (req, res, next) {
   let cust_id = req.body.cust_id;
