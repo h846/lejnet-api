@@ -8,6 +8,60 @@ router.post('', function (req, res, next) {
   oracle.connect(res);
 })
 */
+
+/* Get Campaign Data */
+router.post('/camp_data', function (req, res, next) {
+  let sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+/* Order History for Rakugae */
+router.post('/rg_history', function (req, res, next) {
+  let cust_id = req.body.cust_id;
+  let sql = `SELECT * FROM \
+  LEJ.V_CS_HISTORY_DATA, \
+  LEJ.ORDER_ADDRESSES, \
+  CSNET.ORDER_MULTI_SHIP \
+  WHERE CUS_NUM = ${cust_id} AND \
+  PROD_STAT <> 'B' AND \
+  PROD_STAT <> 'C' AND \
+  ORD_NUM = OR_ORDER_NUMBER AND \
+  ORD_NUM = MS_ORDER_NUMBER(+) AND \
+  ENT_DT >= (SYSDATE - 60)`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* Get Catalog Page*/
+router.post('/cat_page', function (req, res, next) {
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM \
+  CSNET.cs_cat_page WHERE style_no = ${sty_num} \
+  AND online_cat = 1 \
+  ORDER BY ID DESC`;
+  
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* Get Sample Page */
+router.post('/sample_page', function (req, res, next) {
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM CSNET.CS_SAMPLE WHERE STYLE_NUM = ${sty_num}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/*
+  Mono API
+*/
+router.post('/mono', function (req, res, next) {
+  let sty_nbr = req.body.style_number;
+  let sql = `SELECT * FROM LEJ.V_CS_MONO_INFO WHERE STY_NBR = ${sty_nbr}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /*
   Lead Time
 */
@@ -36,92 +90,12 @@ router.post('/taiwa_shiki', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+
 /*
   Mono color
 */
 router.post('/mono_clr', function (req, res, next) {
   let sql = "SELECT * FROM INT_MONO_THREAD_COLOR WHERE STATUS <> 9";
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-/*
-  Mono location
-*/
-router.post('/mono_loc', function (req, res, next) {
-  let atcid = req.body.atc_id;
-  let monogrp = req.body.mono_grp;
-  let str;
-  // Single or Multi?
-  if (atcid.indexOf(',') == -1) { // Single
-    str = `= ${atcid}`;
-  } else { // Multi
-    str = `IN(${atcid})`;
-  }
-
-  let sql = `SELECT MLOC.LOCATION_ID, \
-  MLOC.ATTACHMENT_ID, \
-  LOCA.DESC_JP, \
-  LOCA.IMG_PATH \
-  FROM (INT_MONO_LOC_GRP MLOC INNER JOIN INT_MONO_LOCATION LOCA ON (MLOC.LOCATION_ID = LOCA.LOCATION_ID)) \
-  WHERE MLOC.ATTACHMENT_ID ${str} AND MLOC.GROUP_ID = ${monogrp}`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-/*
-  Mono type
-*/
-router.post('/mono_type', function (req, res, next) {
-  let atcid = req.body.atc_id;
-  let str = '';
-  // Single or Multi?
-  if (atcid.indexOf(',') == -1) { // Single
-    str = `= ${atcid}`;
-  } else { // Multi
-    str = `IN (${atcid})`;
-  }
-  let sql = `SELECT \
-  MTYPE.ATTACHMENT_ID, \
-  MTYPE.TYPE_ID, \
-  MTYPE.DESC_JP, \
-  MTYPE.IMG_PATH, \
-  MTYPE.MIN_LENGTH, \
-  MTYPE.MAX_LENGTH, \
-  MTYPE.PRICE, \
-  MATT.THREAD_CLR_FLG, \
-  MATT.ENTRY_BOX_FLG \
-  FROM (INT_MONO_ATTACHMENT MATT \
-  INNER JOIN INT_MONO_TYPE MTYPE ON MATT.ATTACHMENT_ID = MTYPE.ATTACHMENT_ID) \
-  WHERE MATT.ATTACHMENT_ID ${str} AND MTYPE.STATUS <> 9 \
-  ORDER BY MTYPE.TYPE_ID ASC`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-/*
-  MONO GROUP and ATTACHMENT ID
-*/
-router.post('/monog_atcid', function (req, res, next) {
-  let sty_num = req.body.style_number;
-  let sql = `SELECT \
-  SKU.STY_NBR, \
-  SKU.MONO_GRP_CODE, \
-  MATT.NAME_JP, \
-  MATT.DESC_JP, \
-  MATT.IMG_PATH, \
-  MLOC.ATTACHMENT_ID \
-  FROM INT_MONO_ATTACHMENT MATT \
-  INNER JOIN (INT_SKU_MST SKU \
-  INNER JOIN INT_MONO_LOC_GRP MLOC ON SKU.MONO_GRP_CODE = MLOC.GROUP_ID) \
-  ON MLOC.ATTACHMENT_ID = MATT.ATTACHMENT_ID \
-  WHERE SKU.STY_NBR=${sty_num} \
-  GROUP BY \
-  SKU.STY_NBR, \
-  SKU.MONO_GRP_CODE, \
-  MATT.NAME_JP, \
-  MATT.DESC_JP, \
-  MATT.IMG_PATH, \
-  MLOC.ATTACHMENT_ID \
-  ORDER BY ATTACHMENT_ID ASC`;
-
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -187,8 +161,11 @@ router.post('/ar_invoice_rec/', function (req, res, next) {
 router.post('/styles/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
-  let sql = 'SELECT * FROM INT_STY_MST';
-  sql = sty_num === 'all' ? sql : sql + ` WHERE STY_NBR = 'JP${sty_num}F'`;
+  let sql = `SELECT * FROM INT_PRD_STY PRD, INT_STY_MST STY \
+  WHERE \
+  STY.STY_NBR = 'JP${sty_num}F' AND \
+  PRD.PRD_NBR = 'JP${sty_num}F' AND \
+  PRD.STY_NBR = '${sty_num}'`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
@@ -200,13 +177,15 @@ router.post('/styles/', function (req, res, next) {
 */
 router.post('/img_clr/', function (req, res, next) {
 
-  let prd_num = req.body.product_number;
-  let sql =
-    `SELECT * FROM INT_IMG_MST IMG \
-      LEFT JOIN CLR_MST CLR ON IMG.CLR_CODE = CLR.CLR_CODE \
-      WHERE IMG.PRD_NBR = 'JP${prd_num}F' \
-      AND (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') \
-      ORDER BY IMG.CLR_CODE DESC`;
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM \
+  INT_PRD_STY PRD, \
+  INT_IMG_MST IMG, \
+  CLR_MST CLR \
+  WHERE PRD.PRD_NBR = IMG.PRD_NBR AND \
+  IMG.CLR_CODE = CLR.CLR_CODE AND \
+  (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
+  PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
