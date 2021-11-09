@@ -9,6 +9,12 @@ router.post('', function (req, res, next) {
 })
 */
 
+/* Add Campaign Data*/
+router.post('/camp_data/add', function (req, res, next) {
+  let sql = req.body.sql;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /* Get Campaign Data */
 router.post('/camp_data', function (req, res, next) {
   let sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
@@ -231,7 +237,7 @@ class Orcl {
       
       try {
         //SQL文がSELECTから始まっていたら
-        if(/^(SELECT)/.test(this._sql)){
+        if(/^(SELECT)/i.test(this._sql)){
           let data = await con.execute(this._sql, [], {});
           let cols = data.metaData;
           let rows = data.rows;
@@ -246,8 +252,11 @@ class Orcl {
             });
           }
           res.send(result);
-        }else{
-
+        // INSERTからはじまっていたら
+        }else if(/^(INSERT)/i.test(this._sql)){
+          let result = await con.execute(this._sql,[],{autoCommit:true})
+          console.log("Rows Inserted: " + result.rowsAffected)
+          res.sendStatus(200);
         }
       
       } catch (err) {
