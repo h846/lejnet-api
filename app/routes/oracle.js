@@ -228,21 +228,28 @@ class Orcl {
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
       });
       // Database Side Process
-      let result = [];
+      
       try {
-        let data = await con.execute(this._sql, [], {});
-        let cols = data.metaData;
-        let rows = data.rows;
-        let obj = {}
-        for (let k = 0; k < rows.length; k++) {
-          for (let i = 0; i < cols.length; i++) {
-            obj[String(cols[i].name)] = String(rows[k][i]);
+        //SQL文がSELECTから始まっていたら
+        if(/^(SELECT)/.test(this._sql)){
+          let data = await con.execute(this._sql, [], {});
+          let cols = data.metaData;
+          let rows = data.rows;
+          let obj = {}
+          let result = [];
+          for (let k = 0; k < rows.length; k++) {
+            for (let i = 0; i < cols.length; i++) {
+              obj[String(cols[i].name)] = String(rows[k][i]);
+            }
+            result.push({
+              ...obj
+            });
           }
-          result.push({
-            ...obj
-          });
+          res.send(result);
+        }else{
+
         }
-        res.send(result);
+      
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
           res.status(404).send('The specified parameter does not exist.');
@@ -264,6 +271,7 @@ class Orcl {
       }
     }
   }
+
 }
 
 module.exports = router;
