@@ -9,15 +9,14 @@ router.post('', function (req, res, next) {
 })
 */
 
-/* Add Campaign Data*/
-router.post('/camp_data/add', function (req, res, next) {
-  let sql = req.body.sql;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-/* Get Campaign Data */
+/* Get & Add Campaign Data */
 router.post('/camp_data', function (req, res, next) {
-  let sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
+  let sql;
+  if(!req.body.sql){
+    sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
+  }else{
+    sql = req.body.sql;
+  }
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -234,7 +233,6 @@ class Orcl {
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
       });
       // Database Side Process
-      
       try {
         //SQL文がSELECTから始まっていたら
         if(/^(SELECT)/i.test(this._sql)){
@@ -252,10 +250,10 @@ class Orcl {
             });
           }
           res.send(result);
-        // INSERTからはじまっていたら
-        }else if(/^(INSERT)/i.test(this._sql)){
+        // INSERTまたはUPDATE, DELETEからはじまっていたら
+        }else{
           let result = await con.execute(this._sql,[],{autoCommit:true})
-          console.log("Rows Inserted: " + result.rowsAffected)
+          console.log(result.rowsAffected)
           res.sendStatus(200);
         }
       
