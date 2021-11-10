@@ -9,6 +9,12 @@ router.post('', function (req, res, next) {
 })
 */
 
+/* Add Campaign Data*/
+router.post('/camp_data/add', function (req, res, next) {
+  let sql = req.body.sql;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /* Get Campaign Data */
 router.post('/camp_data', function (req, res, next) {
   let sql = `SELECT * FROM CSNET.CAMPAIGN_DATA`;
@@ -228,21 +234,31 @@ class Orcl {
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
       });
       // Database Side Process
-      let result = [];
+      
       try {
-        let data = await con.execute(this._sql, [], {});
-        let cols = data.metaData;
-        let rows = data.rows;
-        let obj = {}
-        for (let k = 0; k < rows.length; k++) {
-          for (let i = 0; i < cols.length; i++) {
-            obj[String(cols[i].name)] = String(rows[k][i]);
+        //SQL文がSELECTから始まっていたら
+        if(/^(SELECT)/i.test(this._sql)){
+          let data = await con.execute(this._sql, [], {});
+          let cols = data.metaData;
+          let rows = data.rows;
+          let obj = {}
+          let result = [];
+          for (let k = 0; k < rows.length; k++) {
+            for (let i = 0; i < cols.length; i++) {
+              obj[String(cols[i].name)] = String(rows[k][i]);
+            }
+            result.push({
+              ...obj
+            });
           }
-          result.push({
-            ...obj
-          });
+          res.send(result);
+        // INSERTからはじまっていたら
+        }else if(/^(INSERT)/i.test(this._sql)){
+          let result = await con.execute(this._sql,[],{autoCommit:true})
+          console.log("Rows Inserted: " + result.rowsAffected)
+          res.sendStatus(200);
         }
-        res.send(result);
+      
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
           res.status(404).send('The specified parameter does not exist.');
@@ -264,6 +280,7 @@ class Orcl {
       }
     }
   }
+
 }
 
 module.exports = router;
