@@ -20,6 +20,43 @@ router.post('/camp_data', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+
+/* Pants Embroidery Data */
+router.post('/pants_emb', function (req, res, next) {
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* Catalog Name */
+router.post('/cat_name', function (req, res, next) {
+  let sql = `SELECT DISTINCT ind.cat_id, ind.cat_name, ind.index_num \
+  FROM csnet.cs_cat_ind ind, csnet.cs_cat_page page \
+  WHERE ind.cat_id = page.cat_code AND page.online_cat = 1`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+/* Premium Plus*/
+router.post('/prm_pls', function (req, res, next) {
+  let cust_id = req.body.cust_id;
+  let sql = `SELECT * FROM CSNET.CS_CUST_PURCHASE_AMOUNT WHERE CUSTOMER_NUM = ${cust_id}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* Delivery Alert*/
+router.post('/deli_alert', function (req, res, next) {
+  let pref = req.body.prefecture;
+  let sql = `SELECT * FROM CSNET.CS_DELIVERY_ALERT WHERE `;
+  if(!pref){
+    sql += "prefectures = 'all'";
+  }else{
+    sql += `(prefectures = 'all' OR PREFECTURES = '${pref}')`;
+  }
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
 /* Order History for Rakugae */
 router.post('/rg_history', function (req, res, next) {
   let cust_id = req.body.cust_id;
@@ -166,10 +203,10 @@ router.post('/ar_invoice_rec/', function (req, res, next) {
 router.post('/styles/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
+
   let sql = `SELECT * FROM INT_PRD_STY PRD, INT_STY_MST STY \
-  WHERE \
-  STY.STY_NBR = 'JP${sty_num}F' AND \
-  PRD.PRD_NBR = 'JP${sty_num}F' AND \
+  WHERE STY.STY_NBR = PRD.PRD_NBR \
+  AND \
   PRD.STY_NBR = '${sty_num}'`;
 
   let oracle = new Orcl(sql);
