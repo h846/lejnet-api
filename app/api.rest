@@ -1,0 +1,6 @@
+POST http://localhost:3000/oracle/rg_history
+content-type: application/json
+
+{
+    "cust_id": "1122704"
+}
