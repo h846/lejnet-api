@@ -33,7 +33,7 @@ router.post('/pants_emb', function (req, res, next) {
 router.post('/cat_name', function (req, res, next) {
   let sql = `SELECT DISTINCT ind.cat_id, ind.cat_name, ind.index_num \
   FROM csnet.cs_cat_ind ind, csnet.cs_cat_page page \
-  WHERE ind.cat_id = page.cat_code AND page.online_cat = 1`;
+  WHERE ind.cat_id = page.cat_code AND page.online_cat = 1 ORDER BY ind.cat_id DESC`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -64,12 +64,12 @@ router.post('/rg_history', function (req, res, next) {
   LEJ.V_CS_HISTORY_DATA, \
   LEJ.ORDER_ADDRESSES, \
   CSNET.ORDER_MULTI_SHIP \
-  WHERE CUS_NUM = ${cust_id} AND \
+  WHERE CUS_NUM = '${cust_id}' AND \
   PROD_STAT <> 'B' AND \
   PROD_STAT <> 'C' AND \
   ORD_NUM = OR_ORDER_NUMBER AND \
   ORD_NUM = MS_ORDER_NUMBER(+) AND \
-  ENT_DT >= (SYSDATE - 60)`;
+  ENT_DT >= (SYSDATE - 60) ORDER BY ENT_DT DESC`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
@@ -100,7 +100,7 @@ router.post('/sample_page', function (req, res, next) {
 */
 router.post('/mono', function (req, res, next) {
   let sty_nbr = req.body.style_number;
-  let sql = `SELECT * FROM LEJ.V_CS_MONO_INFO WHERE STY_NBR = ${sty_nbr}`;
+  let sql = `SELECT * FROM CSNET.V_CS_MONO_INFO WHERE STY_NBR = ${sty_nbr}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -204,10 +204,7 @@ router.post('/styles/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
 
-  let sql = `SELECT * FROM INT_PRD_STY PRD, INT_STY_MST STY \
-  WHERE STY.STY_NBR = PRD.PRD_NBR \
-  AND \
-  PRD.STY_NBR = '${sty_num}'`;
+  let sql = `SELECT * FROM LEJ.INT_STY_MST WHERE STY_NBR='${sty_num}'`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
