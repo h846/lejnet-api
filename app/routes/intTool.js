@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const rootdir= 'D:/inetpub/wwwroot';
+const rootdir= '//jpweb001/wwwroot/';
 
 router.use(express.static(rootdir + '/IntTool/public'));
 

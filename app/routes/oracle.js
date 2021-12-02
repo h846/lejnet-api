@@ -305,7 +305,7 @@ class Orcl {
       
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
-          res.status(404).send('The specified parameter does not exist.');
+          res.status(404).send('このパラメータ値に該当するものはありませんでした');
         } else {
           res.send(err)
         }
