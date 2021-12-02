@@ -1,6 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
+
+// for local enviroment
+try {
+  oracledb.initOracleClient({
+    libDir: 'C:\\instantclient_19_11'
+  });
+} catch (err) {
+  console.error('Whoops!');
+  console.error(err);
+  //process.exit(1);
+}
+
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
   let sql = ``;
@@ -9,7 +21,7 @@ router.post('', function (req, res, next) {
 })
 */
 
-/* Get & Add Campaign Data */
+/* Campaign Data API*/
 router.post('/camp_data', function (req, res, next) {
   let sql;
   if(!req.body.sql){
@@ -166,11 +178,13 @@ router.post('/ar_invoice_rec/', function (req, res, next) {
 router.post('/styles/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
+
   let sql = `SELECT * FROM INT_PRD_STY PRD, INT_STY_MST STY \
   WHERE \
-  STY.STY_NBR = 'JP${sty_num}F' AND \
-  PRD.PRD_NBR = 'JP${sty_num}F' AND \
-  PRD.STY_NBR = '${sty_num}'`;
+  STY.STY_NBR = PRD.PRD_NBR \
+  AND \
+  PRD.STY_NBR = ${sty_num}`;
+
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
