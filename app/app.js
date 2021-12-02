@@ -39,7 +39,6 @@ app.use('/users', usersRouter);
 app.use('/accdb', accdbRouter);
 app.use('/json', jsonRouter);
 app.use('/oracle', oracleRouter);// for L+ app
-
 //added by Janusz, 2021/11/30
 app.use('/inttool', intTool);
 

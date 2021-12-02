@@ -1,0 +1,3 @@
+POST http://lejnet/api/oracle/smlr_item
+content-type: application/json
+{"color_code": "ZTU"}
