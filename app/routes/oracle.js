@@ -1,6 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
+
+// for local enviroment
+try {
+  oracledb.initOracleClient({
+    libDir: 'C:\\instantclient_19_11'
+  });
+} catch (err) {
+  console.error('Whoops!');
+  console.error(err);
+  //process.exit(1);
+}
+
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
   let sql = ``;
@@ -9,7 +21,7 @@ router.post('', function (req, res, next) {
 })
 */
 
-/* Get & Add Campaign Data */
+/* Campaign Data API*/
 router.post('/camp_data', function (req, res, next) {
   let sql;
   if(!req.body.sql){
