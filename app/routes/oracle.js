@@ -21,7 +21,7 @@ router.post('', function (req, res, next) {
 })
 */
 
-/* Campaign Data API*/
+/* Campaign Data API (for campaign tool)*/
 router.post('/camp_data', function (req, res, next) {
   let sql;
   if(!req.body.sql){
@@ -29,6 +29,29 @@ router.post('/camp_data', function (req, res, next) {
   }else{
     sql = req.body.sql;
   }
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/*Color expression data */
+router.post('/color_exp', function (req, res, next) {
+  let color_code = req.body.color_code;
+  let sql = `SELECT * FROM CSNET.V_CS_COLOR_INFO WHERE COLOR_CODE = '${color_code}'`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* Search similar sample item from color code*/
+router.post('/smlr_item', function (req, res, next) {
+   let color_code = req.body.color_code;
+  let sql = `SELECT * FROM CSNET.V_CS_SAMPLE WHERE CLR_CODE = '${color_code}'`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+/* Search similar swatch from color code */
+router.post('/smlr_swth', function (req, res, next) {
+   let color_code = req.body.color_code;
+  let sql = `SELECT * FROM CSNET.V_CS_SWATCH WHERE CLR_CODE = '${color_code}'`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -316,7 +339,7 @@ class Orcl {
     } finally {
       if (con) {
         try {
-          console.log("it works")
+          //console.log("it works")
           await con.close();
         } catch (err) {
           res.send(err);
