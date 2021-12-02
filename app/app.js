@@ -10,6 +10,8 @@ var usersRouter = require('./routes/users');
 var accdbRouter = require('./routes/accdb');
 var jsonRouter = require('./routes/json');
 var oracleRouter = require('./routes/oracle');
+//added by Janusz, 2021/11/30
+var intTool = require('./routes/intTool');
 
 var app = express();
 
@@ -33,11 +35,14 @@ app.use('/users', usersRouter);
 app.use('/accdb', accdbRouter);
 app.use('/json', jsonRouter);
 app.use('/oracle', oracleRouter);
+//added by Janusz, 2021/11/30
+app.use('/inttool', intTool);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function (err, req, res, next) {
