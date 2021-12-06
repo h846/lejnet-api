@@ -301,7 +301,6 @@ class Orcl {
         password: "nodeora",
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
       });
-      // Database Side Process
       try {
         //SQL文がSELECTから始まっていたら
         if(/^(SELECT)/i.test(this._sql)){
@@ -328,14 +327,14 @@ class Orcl {
       
       } catch (err) {
         if (err.message == "Cannot read property '0' of undefined") {
-          res.status(404).send('このパラメータ値に該当するものはありませんでした');
+          res.status(404).send('このパラメータ値に該当するデータはありませんでした');
         } else {
           res.send(err)
         }
       }
     } catch (err) {
       console.log(err);
-      res.send('connection error occured: \n' + err);
+      res.send('接続エラー: \n' + err);
     } finally {
       if (con) {
         try {
