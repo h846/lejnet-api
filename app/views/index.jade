@@ -5,7 +5,7 @@ block content
   p Welcome to #{title}
   script(src="/socket.io/socket.io.js")
   script.
-    var socket = io('//localhost:3000');
+    var socket = io('http://lejnet/api/');
     socket.on('socketToMe', function (data) {
       console.log(data);
     });
