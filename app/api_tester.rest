@@ -6,7 +6,10 @@ content-type: application/json
 PUT http://lejnet/api/json/
 content-type: application/json
 
-{"file": "csnet/announce.json"}
+{"file": "csnet/announce.json","data":"これはテストデータです"}
 
 ###
-GET http://localhost:3000/users
+GET http://localhost:3000/json
+content-type: application/json
+
+{"file": "csnet/announce.json"}
