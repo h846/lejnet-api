@@ -1,23 +1,24 @@
-const {
-  json
-} = require('express');
+const { json } = require('express');
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
-/* Generate JSON file*/
+/* UPDATE JSON file*/
 // /json?file=xxxx&data={"hoge":"fuga"}
-router.post('/', function (req, res, next) {
+router.put('/', function (req, res, next) {
+  // params
+  let file = req.body.file;
+  let data = req.body.data;
   try {
     //Check for existence of josn file
-    let fileName = `../src/json/${req.body.file}`;
-    //res.status(200).send(req.body.file);
-    if (!fs.existsSync(fileName)) {
-      res.status(404).send('The requested JSON file does NOT exist');
+    let filePath = `../src/json/${file}`;
+
+    if (!fs.existsSync(filePath)) {
+      res.status(404).send('The requested JSON file does NOT exist').end();
     }
 
     // Load json file
-    let jsonFile = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    let jsonFile = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
     //Get Date & Time Now
     let date = new Date();
@@ -26,11 +27,11 @@ router.post('/', function (req, res, next) {
     // add a data to json file
     jsonFile.list.unshift({
       "date": today,
-      "data": req.body.data
+      "data": data
     })
     let jsonData = JSON.stringify(jsonFile);
 
-    fs.writeFile(fileName, jsonData, err => {
+    fs.writeFile(filePath, jsonData, err => {
       if (err) {
         console.log(err)
       } else {

@@ -1,3 +1,12 @@
-POST http://lejnet/api/oracle/smlr_item
+POST http://localhost:3000/oracle/smlr_item
 content-type: application/json
-{"color_code": "ZTU"}
+
+{ "color_code": "ZTU"}
+###
+PUT http://lejnet/api/json/
+content-type: application/json
+
+{"file": "csnet/announce.json"}
+
+###
+GET http://localhost:3000/users
