@@ -15,9 +15,13 @@ router.get("/",function(req,res,next){
     }
     // Load json file
     let jsonFile = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    let jsonData = JSON.stringify(jsonFile);
+
+    let list = JSON.stringify(jsonFile)
+
+    //res.header('Content-Type', 'application/json; charset=utf-8')
+    //res.send(list['list'])
     //Send JSON file
-    res.status(200).json(jsonData).end()
+    res.status(200).json(jsonFile.list).end()
 
   } catch (e) {
     res.status(400).send(e).end()
