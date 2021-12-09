@@ -13,3 +13,8 @@ GET http://localhost:3000/json
 content-type: application/json
 
 {"file": "csnet/announce.json"}
+###
+GET http://lejnet/api/json
+content-type: application/json
+
+{"file": "csnet/announce.json"}
