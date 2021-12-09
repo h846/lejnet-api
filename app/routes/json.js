@@ -1,6 +1,7 @@
-const { json } = require('express');
+// const { json } = require('express');
 var express = require('express');
 var fs = require('fs');
+const { getEnvironmentData } = require('worker_threads');
 var router = express.Router();
 
 /* GET JSON FILE */
@@ -16,17 +17,23 @@ router.get("/",function(req,res,next){
     // Load json file
     let jsonFile = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    let list = JSON.stringify(jsonFile)
+   // let list = JSON.stringify(jsonFile)
 
-    //res.header('Content-Type', 'application/json; charset=utf-8')
+    res.header('Content-Type', 'application/json; charset=utf-8')
     //res.send(list['list'])
     //Send JSON file
-    res.status(200).json(jsonFile.list).end()
-
+    setInterval((res, filePath)=>{
+      await checkData(filePath)
+      res.status(200).json(jsonFile.list).end()
+    },1000)
   } catch (e) {
     res.status(400).send(e).end()
   }
 })
+
+async function checkData(path){
+
+}
 
 /* UPDATE JSON file*/
 // /json?file=xxxx&data={"hoge":"fuga"}
