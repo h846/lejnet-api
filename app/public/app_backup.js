@@ -29,7 +29,7 @@ io.on('connection', function(socket){
 });
 
 // view engine setup
-// Added additional views path. Janusz, 2021/12/14
+// Added additional views path. janusz, 2021/12/14
 app.set('views', [path.join(__dirname, 'views'),path.join(INTTOOLS_PATH,'intviews')]);
 //app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
