@@ -1,3 +1,11 @@
+GET http://lejnet/api/oracle/
+
+###
+POST http://lejnet/api/oracle/smlr_item
+content-type: application/json
+
+{ "color_code": "ZTU"}
+###
 POST http://localhost:3000/oracle/smlr_item
 content-type: application/json
 
