@@ -11,6 +11,7 @@ var accdbRouter = require('./routes/accdb');
 var jsonRouter = require('./routes/json');
 var oracleRouter = require('./routes/oracle');
 //added by Janusz, 2021/11/30
+const {INTTOOLS_PATH} = require('./public/paths');
 var intTool = require('./routes/intTool');
 var intOrcl = require('./routes/intOrcl');
 
@@ -28,7 +29,9 @@ io.on('connection', function(socket){
 });
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+// Added additional views path. janusz, 2021/12/14
+app.set('views', [path.join(__dirname, 'views'),path.join(INTTOOLS_PATH,'intviews')]);
+//app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));

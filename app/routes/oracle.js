@@ -3,6 +3,7 @@ var router = express.Router();
 var oracledb = require('oracledb');
 
 // for local enviroment
+/*
 try {
   oracledb.initOracleClient({
     libDir: 'C:\\instantclient_19_11'
@@ -12,7 +13,7 @@ try {
   console.error(err);
   //process.exit(1);
 }
-
+*/
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
   let sql = ``;

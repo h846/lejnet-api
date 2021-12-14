@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const oracledb = require('oracledb');
 
+//try {
+//  oracledb.initOracleClient({libDir: 'C:\\app\\instantclient_21_3'});
+//} catch (err) {
+//  console.error('Whoops!');
+//  console.error(err);
+//  process.exit(1);
+//}
+
 /* -- TEMPLATE --
 router.post('', function (req, res, next) {
   let sql = ``;
@@ -11,11 +19,10 @@ router.post('', function (req, res, next) {
 */
 
 /* get hemming type data */
-router.get('/readhemtp', function (req, res, next) {
+router.post('/readhemtp', function (req, res, next) {
     let sql;
-    console.log("/readhemtp")
     if(!req.body.sql){
-      sql = `SELECT type_id,cuff_flg,desc_en,desc_jp,price,status from lej.int_hem_type`;
+      sql = `select type_id,cuff_flg,desc_en,desc_jp,price,status from lej.int_hem_type`;
     }else{
       sql = req.body.sql;
     }
@@ -43,7 +50,6 @@ class Orcl {
       con = await oracledb.getConnection({
         user: "nodeora",
         password: "nodeora",
-        //connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
         connectionString: "LEJPPDORA01:1521/orcl.leinternal.com"
       });
       // Database Side Process
@@ -84,9 +90,10 @@ class Orcl {
     } finally {
       if (con) {
         try {
-          console.log("it works")
+          //console.log("it works")
           await con.close();
         } catch (err) {
+          console.log("it works")
           res.send(err);
         }
       }
