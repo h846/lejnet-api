@@ -11,9 +11,9 @@ var accdbRouter = require('./routes/accdb');
 var jsonRouter = require('./routes/json');
 var oracleRouter = require('./routes/oracle');
 //added by Janusz, 2021/11/30
-//const {INTTOOLS_PATH} = require('./public/paths');
-//var intTool = require('./routes/intTool');
-//var intOrcl = require('./routes/intOrcl');
+const {INTTOOLS_PATH} = require('./public/paths');
+var intTool = require('./routes/intTool');
+var intOrcl = require('./routes/intOrcl');
 
 var app = express();
 // socket.io setup
@@ -30,7 +30,7 @@ io.on('connection', function(socket){
 
 // view engine setup
 // Added additional views path. Janusz, 2021/12/14
-//app.set('views', [path.join(__dirname, 'views'),path.join(INTTOOLS_PATH,'intviews')]);
+app.set('views', [path.join(__dirname, 'views'),path.join(INTTOOLS_PATH,'intviews')]);
 //app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -47,8 +47,8 @@ app.use('/accdb', accdbRouter);
 app.use('/json', jsonRouter);
 app.use('/oracle', oracleRouter);// for L+ app
 //added by Janusz, 2021/11/30
-//app.use('/inttool', intTool);
-//app.use('/intorcl',intOrcl);
+app.use('/inttool', intTool);
+app.use('/intorcl',intOrcl);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
