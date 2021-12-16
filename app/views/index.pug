@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1.title= title
+  p.title Welcome to #{title}
   script(src="/socket.io/socket.io.js")
   script.
     var socket = io('localhost:3000');
