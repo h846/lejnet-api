@@ -4,8 +4,10 @@ var router = express.Router();
 
 /* MONITORING JSON FILE */
 router.get("/", async (req,res,next) => {
+  res.status(200);
   // Param, File name of the JSON
   let file = req.body.file;
+  if(!file){res.status(404).send('file not found.')}
   try {
     // Checking the existence of a file
     let filePath = `../src/json/${file}`;
