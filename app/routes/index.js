@@ -13,8 +13,8 @@ process.argv.forEach(function(val, index, array) {
 router.get('/', function(req, res, next) {
   const host = req.headers.host;
   let msg = ""; 
-  if(host.includes("API-TEST")){msg=" API TEST";}
-  else if (host.includes("API")){msg=" API";}
+  if(host.includes("lejnet:3001")){msg=" API TEST";}
+  else if (host.includes("lejnet")){msg=" API";}
   else{msg=" LOCAL HOST";}
   res.render('index', { title: 'LEJ-NET' + msg,
      message: 'Welcome to LEJ-NET' + msg
