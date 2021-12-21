@@ -3,7 +3,7 @@ extends layout
 block content
   h1.title= title
   p.title Welcome to #{title}
-  script(src="/socket.io/socket.io.js")
+  script(src="./socket.io/socket.io.js")
   script.
     var socket = io('localhost:3000');
     socket.on('socketToMe', function (data) {
