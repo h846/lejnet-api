@@ -107,3 +107,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Setup files
+app/public/paths.js
+app/bin/www
