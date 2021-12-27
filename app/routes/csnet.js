@@ -9,8 +9,8 @@ try {
     libDir: 'C:\\instantclient_19_11'
   });
 } catch (err) {
-  console.error('Whoops!');
-  console.error(err);
+  console.log('Whoops!');
+  console.log(err);
   //process.exit(1);
 }
 

@@ -27,4 +27,4 @@ content-type: application/json
 
 {"file": "csnet/announce.json"}
 ###
-POST http://localhost:3000/csnet/web-order
+POST http://lejnet/api/csnet/web-order
