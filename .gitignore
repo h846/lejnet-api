@@ -1,3 +1,5 @@
+#JSON files
+src/json/csnet/
 # Logs
 logs
 *.log
