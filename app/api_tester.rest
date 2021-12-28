@@ -26,3 +26,5 @@ GET http://lejnet/api/json
 content-type: application/json
 
 {"file": "csnet/announce.json"}
+###
+POST http://lejnet/api/csnet/web-order
