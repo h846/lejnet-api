@@ -14,13 +14,13 @@ content-type: application/json
 PUT http://lejnet/api/json/
 content-type: application/json
 
-{"file": "csnet/announce.json","data":"これはテストデータです"}
+{"file": "csnet/announce.json","data":"<p>これはテストデータです</p>"}
 
 ###
-GET http://localhost:3000/json
+PUT http://localhost:3000/json
 content-type: application/json
 
-{"file": "csnet/announce.json"}
+{"file": "csnet/announce_test.json","data":"THIS IS TEST DATA"}
 ###
 GET http://lejnet/api/json
 content-type: application/json
