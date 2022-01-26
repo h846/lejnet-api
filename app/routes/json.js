@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+const Encording = require('encoding-japanese');
 var router = express.Router();
 
 
@@ -86,7 +87,13 @@ router.put('/', function (req, res, next) {
     let announceData = data.replace(/(<([^>]+)>)/gi, '');
     // 謎の数字を追加
     announceData = "2\n"+announceData
-    fs.writeFile(datFile,announceData,(err) => {
+    //Shift-JISに文字コード変更
+    const sjisBytes = Encording.convert(announceData,{
+      from:'UNICODE',
+      to: 'SJIS',
+      type:'arraybuffer'
+    })
+    fs.writeFile(datFile,Buffer.from(sjisBytes),(err) => {
       if (err) throw err;
       console.log('DAT更新成功');
     })
