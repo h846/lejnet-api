@@ -83,7 +83,7 @@ router.put('/', function (req, res, next) {
     let datPath = "//leinternal.com/files/JP/OrgStorage/JPTransfer/CS-Net/POPUP/pop_dept/";
     let datFile = datPath+"all_test.dat";
     //Remove HTML Tag
-    let announceData = data.replace(/<("[^"]*"|'[^']*'|[^'">])*>/);
+    let announceData = data.replace(/(<([^>]+)>)/gi, '');
     // 謎の数字を追加
     announceData = "2\n"+announceData
     fs.writeFile(datFile,announceData,(err) => {
