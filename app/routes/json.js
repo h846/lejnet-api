@@ -83,8 +83,11 @@ router.put('/', function (req, res, next) {
     //新CSNET移行後削除。
     let datPath = "//leinternal.com/files/JP/OrgStorage/JPTransfer/CS-Net/POPUP/pop_dept/";
     let datFile = datPath+"all_test.dat";
+    let announceData
+    //pタグ改行を改行コードへ
+    announceData = data.replace(/<\/p><p>/ig, '\n');
     //Remove HTML Tag
-    let announceData = data.replace(/(<([^>]+)>)/gi, '');
+    announceData = announceData.replace(/(<([^>]+)>)/gi, '');
     // 謎の数字を追加
     announceData = "2\n"+announceData
     //Shift-JISに文字コード変更
