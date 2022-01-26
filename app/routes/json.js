@@ -82,14 +82,10 @@ router.put('/', function (req, res, next) {
     //以下CSNET datファイル書き込み用。
     //新CSNET移行後削除。
     let datPath = "//leinternal.com/files/JP/OrgStorage/JPTransfer/CS-Net/POPUP/pop_dept/";
-<<<<<<< HEAD
-    let datFile = datPath+"all_test.dat";
-    let announceData
-    //pタグ改行を改行コードへ
-    announceData = data.replace(/<\/p><p>/ig, '\n');
-=======
     let datFile = datPath+"all.dat";
->>>>>>> be32c97ce1f51ace58165ea3951266849ee94019
+    let announceData
+    //pタグを改行コードへ
+    announceData = data.replace(/<\/p><p>/ig, '\n');
     //Remove HTML Tag
     announceData = announceData.replace(/(<([^>]+)>)/gi, '');
     // 謎の数字を追加
