@@ -2,6 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
+
 /* MONITORING JSON FILE */
 router.get("/", async (req,res,next) => {
   res.status(200);
@@ -48,7 +49,8 @@ router.put('/', function (req, res, next) {
   let data = req.body.data;
   try {
     //Check for existence of josn file
-    let filePath = `../src/json/${file}`;
+    //let filePath = `../src/json/${file}`;
+    let filePath = `//jpweb001/wwwroot/API/src/json/${file}`;
 
     if (!fs.existsSync(filePath)) {
       res.status(404).send('file not found.');
@@ -72,11 +74,24 @@ router.put('/', function (req, res, next) {
       if (err) {
         console.log(err)
       } else {
-        console.log('更新成功')
+        console.log('JSON更新成功')
       }
     });
 
-    res.status(200).send('The JSON file was created successfully.')
+    //以下CSNET datファイル書き込み用。
+    //新CSNET移行後削除。
+    let datPath = "//leinternal.com/files/JP/OrgStorage/JPTransfer/CS-Net/POPUP/pop_dept/";
+    let datFile = datPath+"all_test.dat";
+    //Remove HTML Tag
+    let announceData = data.replace(/<("[^"]*"|'[^']*'|[^'">])*>/);
+    // 謎の数字を追加
+    announceData = "2\n"+announceData
+    fs.writeFile(datFile,announceData,(err) => {
+      if (err) throw err;
+      console.log('DAT更新成功');
+    })
+
+    res.status(200).send('The file was create successfully.')
   } catch (e) {
     res.status(400).send(e)
   }
