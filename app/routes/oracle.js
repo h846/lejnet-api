@@ -196,6 +196,19 @@ router.post('/mono_clr', function (req, res, next) {
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
+
+/*
+  Mono traking
+*/
+router.post('/mono_track', function (req, res, next) {
+  let type_id = req.body.type_id;
+  let user_id = req.body.user_id;
+  let sql = `INSERT INTO CSNET.CS_TRAKING_MONO (TYPE_ID,AGENT_NAME,USED_DATE) \
+  VALUES('${type_id}' , '${user_id}',SYSDATE) `;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
 /*
   Get Customer Info
 */
@@ -267,13 +280,45 @@ router.post('/styles/', function (req, res, next) {
 });
 
 /*
+Get C+_Style Information
+*/
+router.post('/cplus_styles/', function (req, res, next) {
+
+  let sty_num = req.body.style_number;
+
+  let sql = `SELECT DISTINCT * FROM LEJ.STY_MST WHERE STY =${sty_num}`
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+});
+
+
+
+router.post('/set_style/', function (req, res, next) {
+
+  let sty_num = req.body.style_number;
+
+
+  let sql = `SELECT * \ 
+  FROM \
+  CSNET.CSNET_V_CS_COMBINED_SALE_ITEMS_INV \
+  WHERE SET_STYLE_NUM = ${sty_num} \
+  ORDER BY SET_CLR ASC`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+});
+
+/*
   Get Product Image and color
 */
 router.post('/img_clr/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
 
-  /* New
+  // New
   let sql = `SELECT * FROM \
   LEJ.INT_PRD_STY PRD, \
   LEJ.INT_IMG_MST IMG, \
@@ -282,9 +327,10 @@ router.post('/img_clr/', function (req, res, next) {
   IMG.CLR_CODE = CLR.CLR_CODE AND \
   (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
   PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
-  */
+
 
   //OLD
+  /*
   let sql = `SELECT * FROM \
   INT_PRD_STY PRD, \
   INT_IMG_MST IMG, \
@@ -293,7 +339,7 @@ router.post('/img_clr/', function (req, res, next) {
   IMG.CLR_CODE = CLR.CLR_CODE AND \
   (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
   PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
-
+  */
   let oracle = new Orcl(sql);
   oracle.connect(res);
 

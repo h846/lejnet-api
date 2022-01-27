@@ -10,7 +10,7 @@ var usersRouter = require('./routes/users');
 var accdbRouter = require('./routes/accdb');
 var jsonRouter = require('./routes/json');
 var oracleRouter = require('./routes/oracle');
-var csnetRouter = require('./routes/csnet');
+//var csnetRouter = require('./routes/csnet');
 //added by Janusz, 2021/11/30
 const {INTTOOLS_PATH} = require('./public/paths');
 //var intTool = require('./routes/intTool');
@@ -49,7 +49,7 @@ app.use('/users', usersRouter);
 app.use('/accdb', accdbRouter);
 app.use('/json', jsonRouter);
 app.use('/oracle', oracleRouter);// for L+ app
-app.use('/csnet', csnetRouter);
+//app.use('/csnet', csnetRouter);
 //added by Janusz, 2021/11/30
 //app.use('/inttool', intTool);
 app.use('/intorcl',intOrcl);
