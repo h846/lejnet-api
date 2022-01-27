@@ -318,7 +318,7 @@ router.post('/img_clr/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
 
-  /* New
+  // New
   let sql = `SELECT * FROM \
   LEJ.INT_PRD_STY PRD, \
   LEJ.INT_IMG_MST IMG, \
@@ -327,17 +327,6 @@ router.post('/img_clr/', function (req, res, next) {
   IMG.CLR_CODE = CLR.CLR_CODE AND \
   (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
   PRD.STY_NBR = ${sty_num} O6RDER BY IMG.CLR_CODE DESC`;
-  */
-
-  //OLD
-  let sql = `SELECT * FROM \
-  INT_PRD_STY PRD, \
-  INT_IMG_MST IMG, \
-  CLR_MST CLR \
-  WHERE PRD.PRD_NBR = IMG.PRD_NBR AND \
-  IMG.CLR_CODE = CLR.CLR_CODE AND \
-  (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
-  PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
 
 
   //OLD
