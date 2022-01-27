@@ -326,7 +326,7 @@ router.post('/img_clr/', function (req, res, next) {
   WHERE PRD.PRD_NBR = IMG.PRD_NBR AND \
   IMG.CLR_CODE = CLR.CLR_CODE AND \
   (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
-  PRD.STY_NBR = ${sty_num} O6RDER BY IMG.CLR_CODE DESC`;
+  PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
 
 
   //OLD
