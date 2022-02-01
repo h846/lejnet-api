@@ -20,15 +20,17 @@ var intOrcl = require('./routes/intOrcl');
 var app = express();
 // socket.io setup
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+/*var io = require('socket.io')(server);
 app.use(function(req, res, next){
   res.io = io;
   next();
 });
 
+
 io.on('connection', function(socket){
   console.log('connected!!!');
 });
+*/
 
 // view engine setup
 // Added additional views path. Janusz, 2021/12/14
