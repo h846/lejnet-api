@@ -11,6 +11,7 @@ var accdbRouter = require('./routes/accdb');
 var jsonRouter = require('./routes/json');
 var oracleRouter = require('./routes/oracle');
 var csnetRouter = require('./routes/csnet');
+var excelRouter = require('./routes/excel');
 //added by Janusz, 2021/11/30
 const {INTTOOLS_PATH} = require('./public/paths');
 //var intTool = require('./routes/intTool');
@@ -48,6 +49,7 @@ app.use('/accdb', accdbRouter);
 app.use('/json', jsonRouter);
 app.use('/oracle', oracleRouter);// for L+ app
 app.use('/csnet', csnetRouter);
+app.use('/excel', excelRouter);
 //added by Janusz, 2021/11/30
 //app.use('/inttool', intTool);
 app.use('/intorcl',intOrcl);
