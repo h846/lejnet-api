@@ -15,3 +15,5 @@ content-type: application/json
 {"file": "csnet/announce.json"}
 ###
 POST http://lejnet/api/csnet/web-order
+###
+GET http://localhost:3000/excel/wo-tracking/
