@@ -134,9 +134,9 @@ router.get("/wo-tracking", async function (req, res, next) {
 		row.commit();
 	});
 
-	console.log(list);
+	//console.log(list);
 
-	workbook.xlsx.writeFile("excelFiles/web_order.xlsx");
+	workbook.xlsx.writeFile("../src/excelFiles/web_order.xlsx");
 
 	res.status(200).send("Excel file creation completed.");
 });
