@@ -18,6 +18,7 @@ router.get("/wo-tracking", async function (req, res, next) {
 		.then((res) => {
 			let webOrdData = res.data;
 			let date_cols = ["OH_DATE_ENTERED", "OH_DATE_ORDERED", "OH_DT_LST_MOD"];
+			let tmpDate;
 			webOrdData = webOrdData.map((val) => {
 				//初期整形処理
 				for (let key in val) {
@@ -118,6 +119,7 @@ router.get("/wo-tracking", async function (req, res, next) {
 	const headerFontStyle = {
 		name: "Yu Gothic",
 		bold: true,
+		size: 9,
 	};
 	//すべての行を走査
 	worksheet.eachRow((row, rowNumber) => {
@@ -128,7 +130,7 @@ router.get("/wo-tracking", async function (req, res, next) {
 				cell.fill = headerFillStyle;
 				cell.font = headerFontStyle;
 			} else {
-				cell.font = { name: "Yu Gothic" };
+				cell.font = { name: "Yu Gothic", size: 9 };
 			}
 		});
 		row.commit();
@@ -138,7 +140,9 @@ router.get("/wo-tracking", async function (req, res, next) {
 
 	workbook.xlsx.writeFile("../src/excelFiles/web_order.xlsx");
 
-	res.status(200).send("Excel file creation completed.");
+	//res.status(200).send("Excel file creation completed.");
+
+	res.render("wo-excel");
 });
 
 module.exports = router;
