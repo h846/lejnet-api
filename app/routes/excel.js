@@ -72,7 +72,7 @@ router.get("/wo-tracking", async function (req, res, next) {
 			return webOrdData;
 		});
 
-	list.sort((a, b) => a.OH_DATE_ORDERED - b.OH_DATE_ORDERED);
+	list.sort((a, b) => a.OH_ORDER_NUMBER - b.OH_ORDER_NUMBER);
 
 	worksheet.columns = [
 		{ header: "オーダー日付", key: "order_date", width: 15 },
