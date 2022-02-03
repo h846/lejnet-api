@@ -140,9 +140,9 @@ router.get("/wo-tracking", async function (req, res, next) {
 
 	workbook.xlsx.writeFile("../src/excelFiles/web_order.xlsx");
 
-	//res.status(200).send("Excel file creation completed.");
+	res.status(200).send("Excel file creation completed.");
 
-	res.render("wo-excel");
+	//res.render("wo-excel");
 });
 
 module.exports = router;
