@@ -373,11 +373,11 @@ router.post('/sendreq_nexcat', function (req, res, next) {
   let ex_code = req.body.ex_code;
 
   if(ex_code==1){ //1
-    let sql = `SELECT * FROM CSNET.CS_TEST_NEXT_CA_REQ WHERE CUST_NUM='${cust_id}' AND CAT_COD='${cat_id}' AND SEND_DATE IS NULL`;
+    let sql = `SELECT * FROM CSNET.DM_NEXT_CAT_REQ WHERE CUST_NUM='${cust_id}' AND CAT_COD='${cat_id}' AND SEND_DATE IS NULL`;
     let oracle = new Orcl(sql);
     oracle.connect(res);
   } else if (ex_code==2){
-    let sql = `INSERT INTO CSNET.CS_TEST_NEXT_CA_REQ (CUST_NUM,REQUEST_DATE,CSR_ID,CAT_COD) \
+    let sql = `INSERT INTO CSNET.DM_NEXT_CAT_REQ (CUST_NUM,REQUEST_DATE,CSR_ID,CAT_COD) \
     VALUES('${cust_id}' ,SYSDATE, '${user_id}', '${cat_id}') `;
     let oracle = new Orcl(sql);
     oracle.connect(res);
