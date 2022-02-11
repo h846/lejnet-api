@@ -414,7 +414,7 @@ router.post('/prc_inv', function (req, res, next) {
   let sql = `SELECT * FROM \
   AFL_PRC_INV INV,
   LEJ.INT_SIZ_MST MSIZ
-  WHERE  INV.SIZ = MSIZ.SZM_NAME_J AND \
+  WHERE  INV.SIZ = MSIZ.SZM_NAME_J(+) AND \
   STY = ${style_num} ORDER BY MSIZ.SZM_DSP_ORD ASC`;
 
   let oracle = new Orcl(sql);
