@@ -239,9 +239,15 @@ router.post('/empl/', function (req, res, next) {
     d.ID_DPT_NAM_JP DEPT_NAME_JP, \
     e.HE_POSITION POSITION, \
     e.HE_EMAIL EMAIL, \
-    e.HE_IMG IMAGE_FILE \
-    FROM HR_EMPL e INNER JOIN ISSUP_DPT d ON e.HE_DEP_ID = d.ID_DPT_NUM \
-    WHERE e.HE_STATUS = 1 AND e.HE_WIN_ID = '${win_id}'`;
+    e.HE_IMG IMAGE_FILE, \
+    e.HE_CSNET_ROLE, \
+    CCR.ROLE_NAME \
+    FROM HR_EMPL e, \
+    ISSUP_DPT d, \
+    CSNET.CS_ROLE CCR \
+    WHERE e.HE_DEP_ID = d.ID_DPT_NUM AND \
+    CCR.ROLE_ID = e.HE_CSNET_ROLE  AND \
+    e.HE_WIN_ID = '${win_id}'`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
@@ -294,7 +300,9 @@ router.post('/cplus_styles/', function (req, res, next) {
 });
 
 
-
+/*
+Get Set style Information
+*/
 router.post('/set_style/', function (req, res, next) {
 
   let sty_num = req.body.style_number;
@@ -310,6 +318,71 @@ router.post('/set_style/', function (req, res, next) {
   oracle.connect(res);
 
 });
+
+/*
+  Get campaign Information
+*/
+router.post('/camp_alert/', function (req, res, next) {
+
+  let sty_num = req.body.style_number;
+
+  // New
+  let sql = `SELECT * FROM \
+  CSNET.CS_CAMP_BTN CCB \
+  WHERE CCB.STY = ${sty_num}`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+})
+
+/*
+  Get Next Catalog Information
+*/
+router.post('/next_cat/', function (req, res, next) {
+
+  // New
+  let sql = `SELECT * FROM \
+  CSNET.CS_CAT_NEXT CCN \
+  WHERE CCN.START_DATE IS NOT NULL \
+  ORDER BY CCN.START_DATE DESC FETCH FIRST 1 ROWS ONLY`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+})
+
+router.post('/outofstock_cat/', function (req, res, next) {
+
+  // New
+  let sql = `SELECT * FROM \
+  CSNET.CS_CAT_EMPTY`;
+
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+
+})
+
+/*
+  Next catalog request
+*/
+router.post('/sendreq_nexcat', function (req, res, next) {
+  let cust_id = req.body.cust_id;
+  let user_id = req.body.csr_id;
+  let cat_id = req.body.cat_id;
+  let ex_code = req.body.ex_code;
+
+  if(ex_code==1){ //1
+    let sql = `SELECT * FROM CSNET.CS_TEST_NEXT_CA_REQ WHERE CUST_NUM='${cust_id}' AND CAT_COD='${cat_id}' AND SEND_DATE IS NULL`;
+    let oracle = new Orcl(sql);
+    oracle.connect(res);
+  } else if (ex_code==2){
+    let sql = `INSERT INTO CSNET.CS_TEST_NEXT_CA_REQ (CUST_NUM,REQUEST_DATE,CSR_ID,CAT_COD) \
+    VALUES('${cust_id}' ,SYSDATE, '${user_id}', '${cat_id}') `;
+    let oracle = new Orcl(sql);
+    oracle.connect(res);
+  }
+})
 
 /*
   Get Product Image and color
@@ -328,18 +401,6 @@ router.post('/img_clr/', function (req, res, next) {
   (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
   PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
 
-
-  //OLD
-  /*
-  let sql = `SELECT * FROM \
-  INT_PRD_STY PRD, \
-  INT_IMG_MST IMG, \
-  CLR_MST CLR \
-  WHERE PRD.PRD_NBR = IMG.PRD_NBR AND \
-  IMG.CLR_CODE = CLR.CLR_CODE AND \
-  (IMG.VIEW_TP = 'swatch' or IMG.VIEW_TP = 'viewtype_1') AND \
-  PRD.STY_NBR = ${sty_num} ORDER BY IMG.CLR_CODE DESC`;
-  */
   let oracle = new Orcl(sql);
   oracle.connect(res);
 
@@ -350,7 +411,11 @@ router.post('/img_clr/', function (req, res, next) {
 router.post('/prc_inv', function (req, res, next) {
 
   let style_num = req.body.style_number;
-  let sql = `SELECT * FROM AFL_PRC_INV WHERE STY = ${style_num}`;
+  let sql = `SELECT * FROM \
+  AFL_PRC_INV INV,
+  LEJ.INT_SIZ_MST MSIZ
+  WHERE  INV.SIZ = MSIZ.SZM_NAME_J AND \
+  STY = ${style_num} ORDER BY MSIZ.SZM_DSP_ORD ASC`;
 
   let oracle = new Orcl(sql);
   oracle.connect(res);
