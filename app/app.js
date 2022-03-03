@@ -12,7 +12,7 @@ var jsonRouter = require("./routes/json");
 var oracleRouter = require("./routes/oracle");
 var csnetRouter = require("./routes/csnet");
 var excelRouter = require("./routes/excel");
-//var pdfRouter = require("./routes/pdf");
+var pdfRouter = require("./routes/pdf");
 
 //added by Janusz, 2021/11/30
 const { INTTOOLS_PATH } = require("./public/paths");
@@ -27,7 +27,6 @@ app.use(function(req, res, next){
   res.io = io;
   next();
 });
-
 
 io.on('connection', function(socket){
   console.log('connected!!!');
@@ -57,7 +56,7 @@ app.use("/json", jsonRouter);
 app.use("/oracle", oracleRouter); // for L+ app
 app.use("/csnet", csnetRouter);
 app.use("/excel", excelRouter);
-//app.use("/pdf", pdfRouter);
+app.use("/pdf", pdfRouter);
 //added by Janusz, 2021/11/30
 //app.use('/inttool', intTool);
 app.use("/intorcl", intOrcl);
