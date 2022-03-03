@@ -1,3 +1,5 @@
+app/bin/
+app/.giignore
 #Source Files
 src/
 #Web Config
