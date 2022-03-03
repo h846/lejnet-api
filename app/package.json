@@ -17,6 +17,8 @@
     "encoding-japanese": "^1.0.30",
     "exceljs": "^4.3.0",
     "express": "~4.16.1",
+    "handlebars": "^4.7.7",
+    "html-pdf": "^3.0.1",
     "http-errors": "~1.6.3",
     "moment": "^2.29.1",
     "morgan": "~1.9.1",
