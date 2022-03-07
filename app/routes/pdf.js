@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 //read my module
-const test = require("../assets/js/test");
+const test = require("../assets/js/pdf/weborder");
 
 router.get("/", async function (req, res, next) {
 	await test.main();
