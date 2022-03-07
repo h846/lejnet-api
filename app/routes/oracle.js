@@ -57,10 +57,18 @@ router.post('/smlr_swth', function (req, res, next) {
   oracle.connect(res);
 })
 
-/* Pants Embroidery Data */
+/*@@@@OLD@@@@ Pants Embroidery Data */
 router.post('/pants_emb', function (req, res, next) {
   let sty_num = req.body.style_number;
   let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
+/* New Pants Embroidery Data(for judgement) */
+router.post('/pants_emb_sty', function (req, res, next) {
+  let sty_num = req.body.style_number;
+  let sql = `SELECT * FROM CSNET.V_PANT_EMBROIDERY_STYLE WHERE STY_NBR = ${sty_num}`;
   let oracle = new Orcl(sql);
   oracle.connect(res);
 })
