@@ -2,25 +2,6 @@ var express = require('express');
 var router = express.Router();
 var oracledb = require('oracledb');
 
-// for local enviroment
-/*
-try {
-  oracledb.initOracleClient({
-    libDir: 'C:\\instantclient_19_11'
-  });
-} catch (err) {
-  console.log('Whoops!');
-  console.log(err);
-  //process.exit(1);
-}
-*/
-/* -- TEMPLATE --
-router.post('', function (req, res, next) {
-  let sql = ``;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-*/
 router.post('/web-order', function (req, res, next) {
 
   let sql = `SELECT * FROM CSNET.V_TOOL_OPN_ORD_FOR_OS`;
