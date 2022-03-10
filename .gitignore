@@ -1,8 +1,10 @@
-#Source Files
+# Source Files
 src/
-#Web Config
+# Web Config
 web.config
-#JSON files
+# www
+app/bin/www
+# JSON files
 src/json/csnet/
 # Logs
 logs
