@@ -1,5 +1,6 @@
 # Source Files
 src/
+!user/
 # Web Config
 web.config
 # www
