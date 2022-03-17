@@ -16,7 +16,7 @@ var excelRouter = require("./routes/excel");
 var pdfRouter = require("./routes/pdf");
 
 //added by Janusz, 2021/11/30
-const { INTTOOLS_PATH } = require("./public/paths");
+//const { INTTOOLS_PATH } = require("./public/paths");
 //var intTool = require('./routes/intTool');
 var intOrcl = require("./routes/intOrcl");
 
@@ -36,10 +36,12 @@ io.on('connection', function(socket){
 
 // view engine setup
 // Added additional views path. Janusz, 2021/12/14
+/*
 app.set("views", [
 	path.join(__dirname, "views"),
 	path.join(INTTOOLS_PATH, "intviews"),
 ]);
+*/
 //app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "pug");
 
