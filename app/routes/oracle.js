@@ -58,20 +58,20 @@ router.post("/smlr_swth", function (req, res, next) {
 });
 
 /*@@@@OLD@@@@ Pants Embroidery Data */
-router.post('/pants_emb', function (req, res, next) {
-  let sty_num = req.body.style_number;
-  let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
+router.post("/pants_emb", function (req, res, next) {
+	let sty_num = req.body.style_number;
+	let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
 
 /* New Pants Embroidery Data(for judgement) */
-router.post('/pants_emb_sty', function (req, res, next) {
-  let sty_num = req.body.style_number;
-  let sql = `SELECT * FROM CSNET.V_PANT_EMBROIDERY_STYLE WHERE STY_NBR = ${sty_num}`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
+router.post("/pants_emb_sty", function (req, res, next) {
+	let sty_num = req.body.style_number;
+	let sql = `SELECT * FROM CSNET.V_PANT_EMBROIDERY_STYLE WHERE STY_NBR = ${sty_num}`;
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
 
 /* Catalog Name */
 router.post("/cat_name", function (req, res, next) {
@@ -204,7 +204,6 @@ router.post("/mono_clr", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Mono traking
 */
@@ -216,20 +215,8 @@ router.post("/mono_track", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
-  OLD Get Customer Info
-
-router.post("/customer", function (req, res, next) {
-	let cust_id = req.body.cust_id;
-	let sql = `SELECT * FROM CUSTOMER_MASTER WHERE CM_CUSTOMER_ID = ${cust_id}`;
-	let oracle = new Orcl(sql);
-	oracle.connect(res);
-});
-*/
-
-/*
-  NEW Get Customer Info
+  Get Customer Info
 */
 router.post("/customer", function (req, res, next) {
 	let cust_id = req.body.cust_id;
@@ -303,8 +290,6 @@ router.post("/customer", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
-
 
 /*
   Get Employee Info
@@ -412,12 +397,10 @@ router.post("/camp_alert/", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Get Next Catalog Information
 */
 router.post("/next_cat/", function (req, res, next) {
-	// New
 	let sql = `SELECT * FROM \
   CSNET.CS_CAT_NEXT CCN \
   WHERE CCN.START_DATE IS NOT NULL \
@@ -426,9 +409,8 @@ router.post("/next_cat/", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
+// Out of stock items
 router.post("/outofstock_cat/", function (req, res, next) {
-	// New
 	let sql = `SELECT * FROM CSNET.CS_CAT_EMPTY`;
 
 	let oracle = new Orcl(sql);
@@ -456,14 +438,12 @@ router.post("/sendreq_nexcat", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Get Product Image and color
 */
 router.post("/img_clr/", function (req, res, next) {
 	let sty_num = req.body.style_number;
 
-	// New
 	let sql = `SELECT * FROM \
   LEJ.INT_PRD_STY PRD, \
   LEJ.INT_IMG_MST IMG, \

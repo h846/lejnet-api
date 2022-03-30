@@ -22,11 +22,11 @@ GET http://localhost:3000/excel/wo-tracking/
 ###
 GET http://lejnet/api/excel/wo-tracking/
 ###
-POST http://localhost:3000/csnet/rakugae_tracking/
+POST http://lejnet/api-test/csnet/rakugae_tracking/
 content-type: application/json
 
 {"cust_num": "205455"}
 
 ###
-POST http://localhost:3000/csnet/web-order/
+POST http://localhost:3000/csnet/sample_item/
 

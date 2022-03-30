@@ -2,6 +2,38 @@ var express = require("express");
 var router = express.Router();
 var oracledb = require("oracledb");
 
+/* Sample Item Info*/
+router.post("/sample_item", function (req, res, next) {
+	let sql = `SELECT DISTINCT \
+	SPL.STY_NUM, \
+	SPL.SKU_NUM, \
+	S_MST.STY_NAME_JP, \ 
+	INV.SIZ, \
+	INV.CLR, \
+	C_MST.CLR_DSC_JP, \
+	INV.ORIGINAL_PRICE, \
+	INV.SELLING_PRICE, \
+	SPL.NOTE, \
+	SPL.LOCATION, \
+	SPL.PRINT_FLG, \
+	SPL.LOC_PRINT \
+	FROM \
+	CSNET.CS_SAMPLE_DB SPL, \
+	LEJ.INT_PRC_INV INV, \
+	LEJ.INT_PRD_STY PRD, \
+	LEJ.INT_STY_MST S_MST, \
+	LEJ.INT_CLR_MST C_MST \
+	WHERE \
+	SPL.STY_NUM = PRD.STY_NBR (+) AND \
+	PRD.PRD_NBR = S_MST.STY_NBR (+) AND \
+	SPL.SKU_NUM = INV.SKU_NBR (+) AND \
+	INV.CLR = C_MST.CLR_CODE (+)
+	`;
+
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
 /* Rakugae Tracking */
 router.post("/rakugae_tracking", function (req, res, next) {
 	let cust_num = req.body.cust_num;
