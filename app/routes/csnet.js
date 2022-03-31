@@ -2,6 +2,20 @@ var express = require("express");
 var router = express.Router();
 var oracledb = require("oracledb");
 
+/* Customer Info Change data*/
+
+router.post("/cust_change", function (req, res, next) {
+	// sql param exist -> UPDATE, DELTE, etc..
+	// sql param NOT exist -> SELECT
+	let sql = req.body.sql;
+	if (!sql) {
+		sql = "SELECT * FROM CSNET.CS_JP_ECOA WHERE END_F = 0";
+	}
+
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
 /* Sample Item Info*/
 router.post("/sample_item", function (req, res, next) {
 	let sql = `SELECT DISTINCT \
