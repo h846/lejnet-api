@@ -28,5 +28,5 @@ content-type: application/json
 {"cust_num": "205455"}
 
 ###
-POST http://localhost:3000/csnet/sample_item/
+POST http://lejnet/api-test/csnet/sample_item/
 

@@ -15,8 +15,8 @@ router.post("/sample_item", function (req, res, next) {
 	INV.SELLING_PRICE, \
 	SPL.NOTE, \
 	SPL.LOCATION, \
-	SPL.PRINT_FLG, \
-	SPL.LOC_PRINT \
+	SPL.STY_PRINT_FLG, \
+	SPL.LOC_PRINT_FLG \
 	FROM \
 	CSNET.CS_SAMPLE_DB SPL, \
 	LEJ.INT_PRC_INV INV, \
