@@ -4,7 +4,7 @@ var oracledb = require("oracledb");
 
 /* Customer Info Change data*/
 
-router.post("/cust_change", function (req, res, next) {
+router.post("/jp_ecoa", function (req, res, next) {
 	// sql param exist -> UPDATE, DELTE, etc..
 	// sql param NOT exist -> SELECT
 	let sql = req.body.sql;
