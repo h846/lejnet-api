@@ -18,33 +18,34 @@ router.post("/jp_ecoa", function (req, res, next) {
 /* Sample Item Info*/
 router.post("/sample_item", function (req, res, next) {
 	let sql = `SELECT DISTINCT \
-	SPL.ID,
-	SPL.STY_NUM, \
+	SPL.ID, \
+	SU_MST.STY AS STY_NUM, \
 	SPL.SKU_NUM, \
+	S_MST.STY_NAME_JP, \
+	SU_MST.SIZ, \
+	SU_MST.CLR, \
+	C_MST.CLR_DSC_JP, \
+	INV.ORIGINAL_PRICE, \
+	INV.SELLING_PRICE, \
 	SPL.NOTE, \
 	SPL.LOCATION, \
 	SPL.STY_PRINT_FLG, \
 	SPL.LOC_PRINT_FLG, \
 	SPL.ENT_DT, \
-	SPL.UPD_DT, \
-	INV.SIZ, \
-	INV.CLR, \
-	INV.ORIGINAL_PRICE, \
-	INV.SELLING_PRICE, \
-	S_MST.STY_NAME_JP, \
-	C_MST.CLR_DSC_JP \
+	SPL.UPD_DT \
 	FROM \
 	CSNET.CS_SAMPLE_DB SPL, \
 	LEJ.INT_PRC_INV INV, \
+	LEJ.SKU_MST SU_MST, \
 	LEJ.INT_PRD_STY PRD, \
 	LEJ.INT_STY_MST S_MST, \
 	LEJ.INT_CLR_MST C_MST \
 	WHERE \
-	SPL.STY_NUM = PRD.STY_NBR (+) AND \
-	PRD.PRD_NBR = S_MST.STY_NBR (+) AND \
-	SPL.SKU_NUM = INV.SKU_NBR (+) AND \
-	INV.CLR = C_MST.CLR_CODE (+)
-	`;
+	SU_MST.STY = PRD.STY_NBR(+) AND \
+	SPL.SKU_NUM = SU_MST.LEUS_SKU(+) AND \
+	PRD.PRD_NBR = S_MST.STY_NBR(+) AND \
+	SU_MST.LEUS_SKU = INV.SKU_NBR(+) AND \
+	SU_MST.CLR = C_MST.CLR_CODE(+)`;
 
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
