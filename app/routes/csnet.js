@@ -3,7 +3,6 @@ var router = express.Router();
 var oracledb = require("oracledb");
 
 /* Customer Info Change data*/
-
 router.post("/jp_ecoa", function (req, res, next) {
 	// sql param exist -> UPDATE, DELTE, etc..
 	// sql param NOT exist -> SELECT
@@ -19,18 +18,21 @@ router.post("/jp_ecoa", function (req, res, next) {
 /* Sample Item Info*/
 router.post("/sample_item", function (req, res, next) {
 	let sql = `SELECT DISTINCT \
+	SPL.ID,
 	SPL.STY_NUM, \
 	SPL.SKU_NUM, \
-	S_MST.STY_NAME_JP, \ 
-	INV.SIZ, \
-	INV.CLR, \
-	C_MST.CLR_DSC_JP, \
-	INV.ORIGINAL_PRICE, \
-	INV.SELLING_PRICE, \
 	SPL.NOTE, \
 	SPL.LOCATION, \
 	SPL.STY_PRINT_FLG, \
-	SPL.LOC_PRINT_FLG \
+	SPL.LOC_PRINT_FLG, \
+	SPL.ENT_DT, \
+	SPL.UPD_DT, \
+	INV.SIZ, \
+	INV.CLR, \
+	INV.ORIGINAL_PRICE, \
+	INV.SELLING_PRICE, \
+	S_MST.STY_NAME_JP, \
+	C_MST.CLR_DSC_JP \
 	FROM \
 	CSNET.CS_SAMPLE_DB SPL, \
 	LEJ.INT_PRC_INV INV, \
