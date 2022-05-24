@@ -57,6 +57,8 @@ router.post("/smlr_swth", function (req, res, next) {
 	oracle.connect(res);
 });
 
+<<<<<<< HEAD
+=======
 /*@@@@OLD@@@@ Pants Embroidery Data */
 router.post("/pants_emb", function (req, res, next) {
 	let sty_num = req.body.style_number;
@@ -65,6 +67,7 @@ router.post("/pants_emb", function (req, res, next) {
 	oracle.connect(res);
 });
 
+>>>>>>> dd061bb75826968500faa5bea0b265f3add1c346
 /* New Pants Embroidery Data(for judgement) */
 router.post("/pants_emb_sty", function (req, res, next) {
 	let sty_num = req.body.style_number;
@@ -290,7 +293,10 @@ router.post("/customer", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
+<<<<<<< HEAD
+=======
 
+>>>>>>> dd061bb75826968500faa5bea0b265f3add1c346
 /*
   Get Employee Info
 */
