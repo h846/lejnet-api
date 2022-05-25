@@ -57,17 +57,6 @@ router.post("/smlr_swth", function (req, res, next) {
 	oracle.connect(res);
 });
 
-<<<<<<< HEAD
-=======
-/*@@@@OLD@@@@ Pants Embroidery Data */
-router.post("/pants_emb", function (req, res, next) {
-	let sty_num = req.body.style_number;
-	let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
-	let oracle = new Orcl(sql);
-	oracle.connect(res);
-});
-
->>>>>>> dd061bb75826968500faa5bea0b265f3add1c346
 /* New Pants Embroidery Data(for judgement) */
 router.post("/pants_emb_sty", function (req, res, next) {
 	let sty_num = req.body.style_number;
@@ -293,10 +282,6 @@ router.post("/customer", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> dd061bb75826968500faa5bea0b265f3add1c346
 /*
   Get Employee Info
 */
@@ -383,7 +368,7 @@ router.post("/set_style/", function (req, res, next) {
   FROM \
   CSNET.CSNET_V_CS_COMBINED_SALE_ITEMS_INV \
   WHERE SET_STYLE_NUM = ${sty_num} \
-  ORDER BY SET_CLR ASC`;
+  ORDER BY SET_CLR ASC , SET_SIZE ASC`;
 
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
