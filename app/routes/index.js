@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
   else if (host.includes("lejnet")){msg=" API";}
   else{msg=" LOCAL HOST";}
   res.render('index', { title: 'LEJ-NET' + msg,
-     message: 'Welcome to LEJ-NET' + msg
+  message: 'Welcome to LEJ-NET' + msg
   });
 });
 

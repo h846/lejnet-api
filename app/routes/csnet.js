@@ -2,6 +2,29 @@ var express = require("express");
 var router = express.Router();
 var oracledb = require("oracledb");
 
+try {
+  oracledb.initOracleClient({
+    libDir: 'C:\\Dev\\instantclient'
+  });
+} catch (err) {
+  console.error('Whoops!');
+  console.error(err);
+  //process.exit(1);
+}
+
+/* SS BIBLE DATA */
+router.post("/ss-bible", function (req, res, next) {
+	// sql param exist -> UPDATE, DELTE, etc..
+	// sql param NOT exist -> SELECT
+	let sql = req.body.sql;
+	if (!sql) {
+		sql = "SELECT * FROM CSNET.SS_BIBLE";
+	}
+
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
 /* Customer Info Change data*/
 router.post("/jp_ecoa", function (req, res, next) {
 	// sql param exist -> UPDATE, DELTE, etc..
