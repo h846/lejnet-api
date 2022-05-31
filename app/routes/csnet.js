@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var oracledb = require("oracledb");
-
+/*
 try {
   oracledb.initOracleClient({
     libDir: 'C:\\Dev\\instantclient'
@@ -11,7 +11,7 @@ try {
   console.error(err);
   //process.exit(1);
 }
-
+*/
 /* SS BIBLE DATA */
 router.post("/ss-bible", function (req, res, next) {
 	// sql param exist -> UPDATE, DELTE, etc..
