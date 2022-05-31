@@ -2,22 +2,11 @@ PUT http://lejnet/api/json/
 content-type: application/json
 
 {"file": "csnet/announce_test.json","data":"<p>これはテストデータです</p>"}
-
 ###
-PUT http://localhost:3000/json
+POST http://lejnet/api-test/csnet/rakugae_tracking/
 content-type: application/json
 
-{"file": "csnet/announce_test.json","data":"<p>これはテストです。</p>"}
-###
-GET http://lejnet/api/json
-content-type: application/json
+{"cust_num": "205455"}
 
-{"file": "csnet/announce.json"}
 ###
-POST http://lejnet/api/csnet/web-order
-###
-GET http://localhost:3000/excel/
-###
-GET http://localhost:3000/excel/wo-tracking/
-###
-GET http://lejnet/api/excel/wo-tracking/
+POST http://localhost:3001/csnet/ss-bible/

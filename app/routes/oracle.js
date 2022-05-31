@@ -57,21 +57,13 @@ router.post("/smlr_swth", function (req, res, next) {
 	oracle.connect(res);
 });
 
-/*@@@@OLD@@@@ Pants Embroidery Data */
-router.post('/pants_emb', function (req, res, next) {
-  let sty_num = req.body.style_number;
-  let sql = `SELECT * FROM csnet.v_cs_pants_embroidery WHERE sty_nbr = ${sty_num}`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
-
 /* New Pants Embroidery Data(for judgement) */
-router.post('/pants_emb_sty', function (req, res, next) {
-  let sty_num = req.body.style_number;
-  let sql = `SELECT * FROM CSNET.V_PANT_EMBROIDERY_STYLE WHERE STY_NBR = ${sty_num}`;
-  let oracle = new Orcl(sql);
-  oracle.connect(res);
-})
+router.post("/pants_emb_sty", function (req, res, next) {
+	let sty_num = req.body.style_number;
+	let sql = `SELECT * FROM CSNET.V_PANT_EMBROIDERY_STYLE WHERE STY_NBR = ${sty_num}`;
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
 
 /* Catalog Name */
 router.post("/cat_name", function (req, res, next) {
@@ -204,7 +196,6 @@ router.post("/mono_clr", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Mono traking
 */
@@ -216,13 +207,78 @@ router.post("/mono_track", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Get Customer Info
 */
 router.post("/customer", function (req, res, next) {
 	let cust_id = req.body.cust_id;
-	let sql = `SELECT * FROM CUSTOMER_MASTER WHERE CM_CUSTOMER_ID = ${cust_id}`;
+	let sql = `SELECT \
+	CMM.CM_ZIP_KEY , \
+	CMM.CM_NAME_KEY , \
+	CMM.CM_CUSTOMER_ID , \
+	CMM.CM_NAME_A , \
+	CMM.CM_NAME_B , \
+	CMM.CM_BILL_LAST , \
+	CMM.CM_BILL_FIRST , \
+	CMM.CM_BILL_TITLE_CD , \
+	CMM.CM_BILL_ADDRESS1 , \
+	CMM.CM_BILL_ADDRESS2 , \
+	CMM.CM_BILL_ADDRESS3 , \
+	CMM.CM_BILL_ADDRESS4 , \
+	CMM.CM_BILL_CITY , \
+	CMM.CM_BILL_STATE , \
+	CMM.CM_COUNTRY_CODE , \
+	CMM.CM_ZIP , \
+	CMM.CM_CHARGE_TYPE , \
+	CMM.CM_ORDER_METHOD , \
+	CMM.CM_TAX_CODE , \
+	CMM.CM_PRICE_CODE , \
+	CMM.CM_MARKUP , \
+	CMM.CM_TERRITORY , \
+	CMM.CM_BAD_DEBT , \
+	CMM.CM_PRBLM_CUSTOMER , \
+	CMM.CM_UPS_TYPE , \
+	CMM.CM_DATE_ENTERED , \
+	CMM.CM_LAST_ORD_SRCE , \
+	CMM.CM_ORIG_ACQ_SOURCE , \
+	CMM.CM_TRACKED_IND , \
+	CMM.CM_ORIGIN , \
+	CMM.CM_OPT_ON_ACCT , \
+	CMM.CM_DT_ADDR_CHANGE , \
+	CMM.CM_SALESMAN_ID , \
+	CMM.CM_PHONE_NUMBER , \
+	CMM.CM_PHONE_NUMBER2 , \
+	CMM.CM_DT_LAST_MAILED , \
+	CMM.CM_LST_MAILED_TYPE , \
+	CMM.CM_MAILED_COUNT , \
+	CMM.CM_ENTERED_OP_ID , \
+	CMM.CM_BIRTHDAY , \
+	CMM.CM_RM_LIST , \
+	CMM.CM_RM_RENTED_LIST , \
+	CMM.CM_DIVISION , \
+	CMM.CM_CODE_1 , \
+	CMM.CM_CODE_2 , \
+	CMM.CM_CODE_3 , \
+	CMM.CM_CODE_4 , \
+	CMM.CM_CODE_5 , \
+	CMM.CM_CODE_6 , \
+	CMM.CM_CODE_7 , \
+	CMM.CM_CODE_8 , \
+	CMM.CM_DATE_LST_MOD , \
+	CMM.CM_TIME_LST_MOD , \
+	CMM.CM_USR_LST_MOD , \
+	CMM.CM_EMAIL_ADD , \
+	CMM.CM_INDUSTRY_CD , \
+	CMM.CM_REFER_CUST_ID , \
+	XOFF.CUSTOMER_ID XOFF_CUST_ID , \
+	XOFF.ENTRY_DATE XOFF_ENT_DATE , \
+	XON.XING_OPT XON_XING_OPT \
+	FROM LEJ.CUSTOMER_MASTER CMM , \
+	MKTG.XGATE_OFFLINE XOFF , \
+	LEJ.NL_MASTER XON  \
+	WHERE CMM.CM_CUSTOMER_ID = XOFF.CUSTOMER_ID(+) AND  \
+	CMM.CM_CUSTOMER_ID = XON.CUSTOMER_ID(+) AND  \
+	CMM.CM_CUSTOMER_ID = ${cust_id}`;
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
@@ -312,7 +368,7 @@ router.post("/set_style/", function (req, res, next) {
   FROM \
   CSNET.CSNET_V_CS_COMBINED_SALE_ITEMS_INV \
   WHERE SET_STYLE_NUM = ${sty_num} \
-  ORDER BY SET_CLR ASC`;
+  ORDER BY SET_CLR ASC , SET_SIZE ASC`;
 
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
@@ -332,12 +388,10 @@ router.post("/camp_alert/", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Get Next Catalog Information
 */
 router.post("/next_cat/", function (req, res, next) {
-	// New
 	let sql = `SELECT * FROM \
   CSNET.CS_CAT_NEXT CCN \
   WHERE CCN.START_DATE IS NOT NULL \
@@ -346,9 +400,8 @@ router.post("/next_cat/", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
+// Out of stock items
 router.post("/outofstock_cat/", function (req, res, next) {
-	// New
 	let sql = `SELECT * FROM CSNET.CS_CAT_EMPTY`;
 
 	let oracle = new Orcl(sql);
@@ -376,14 +429,12 @@ router.post("/sendreq_nexcat", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
-
 /*
   Get Product Image and color
 */
 router.post("/img_clr/", function (req, res, next) {
 	let sty_num = req.body.style_number;
 
-	// New
 	let sql = `SELECT * FROM \
   LEJ.INT_PRD_STY PRD, \
   LEJ.INT_IMG_MST IMG, \
