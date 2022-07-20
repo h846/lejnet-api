@@ -38,7 +38,7 @@ router.post("/jp_ecoa", function (req, res, next) {
 	oracle.connect(res);
 });
 
-/* Sample Item Info modify*/
+/* Sample Item Info*/
 router.post("/sample_item", function (req, res, next) {
 	let sql = req.body.sql;
 	
