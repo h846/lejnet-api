@@ -18,7 +18,7 @@ var pdfRouter = require("./routes/pdf");
 //added by Janusz, 2021/11/30
 //const { INTTOOLS_PATH } = require("./public/paths");
 //var intTool = require('./routes/intTool');
-var intOrcl = require("./routes/intOrcl");
+//var intOrcl = require("./routes/intOrcl");
 
 var app = express();
 // socket.io setup
@@ -69,7 +69,7 @@ app.use("/excel", excelRouter);
 app.use("/pdf", pdfRouter);
 //added by Janusz, 2021/11/30
 //app.use('/inttool', intTool);
-app.use("/intorcl", intOrcl);
+// app.use("/intorcl", intOrcl);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
