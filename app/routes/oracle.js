@@ -42,13 +42,22 @@ router.post("/color_exp", function (req, res, next) {
 	oracle.connect(res);
 });
 
-/* Search similar sample item from color code*/
+/* Search similar sample item from color code  @@@@@@@8/2以降のアップデート後に削除OK*/
 router.post("/smlr_item", function (req, res, next) {
 	let color_code = req.body.color_code;
 	let sql = `SELECT * FROM CSNET.V_CS_SAMPLE WHERE CLR_CODE = '${color_code}'`;
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
+
+/* Search similar sample item from color code 　*/
+router.post("/smlr_item_new", function (req, res, next) {
+	let color_code = req.body.color_code;
+	let sql = `SELECT * FROM CSNET.V_CS_SAMPLE_CLR WHERE CLR_CODE = '${color_code}'`;
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
 /* Search similar swatch from color code */
 router.post("/smlr_swth", function (req, res, next) {
 	let color_code = req.body.color_code;
@@ -83,23 +92,48 @@ router.post("/prm_pls", function (req, res, next) {
 
 /* Style Alert */
 router.post("/sty_alert", function (req, res, next) {
-	let sty_num = req.body.style_number;
-	let sql = `SELECT * FROM CSNET.CS_STY_ALERT \
-  WHERE STYLE_NUM = ${sty_num} AND\
-  START_DATE <= SYSDATE  AND \
-  EXPIRE_DATE >= SYSDATE`;
+	let sql;
+	if (!req.body.sql) {
+		let sty_num = req.body.style_number;
+		sql = `SELECT * FROM CSNET.CS_STY_ALERT \
+		WHERE STYLE_NUM = ${sty_num} AND\
+		START_DATE <= SYSDATE  AND \
+		EXPIRE_DATE >= SYSDATE`;
+	} else {
+		sql = req.body.sql;
+	}
+
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
+/* Cutomer Alert */
+router.post("/cust_alert", function (req, res, next) {
+	let sql;
+	let cust_id = req.body.cust_id;
+	if (!req.body.sql) {
+		sql = `SELECT * FROM CSNET.CS_CUSTOMER_ALERT WHERE CUST_NUM = ${cust_id}`;
+	} else {
+		sql = req.body.sql;
+	}
+
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
 
 /* Delivery Alert*/
 router.post("/deli_alert", function (req, res, next) {
+	let sql;
 	let pref = req.body.prefecture;
-	let sql = `SELECT * FROM CSNET.CS_DELIVERY_ALERT WHERE `;
-	if (!pref) {
-		sql += "prefectures = 'all'";
+	if(!req.body.sql){
+		sql = `SELECT * FROM CSNET.CS_DELIVERY_ALERT WHERE `;
+		if (!pref) {
+			sql += "prefectures = 'all'";
+		} else {
+			sql += `(prefectures = 'all' OR PREFECTURES = '${pref}')`;
+		}
 	} else {
-		sql += `(prefectures = 'all' OR PREFECTURES = '${pref}')`;
+		sql = req.body.sql;
 	}
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
@@ -142,10 +176,18 @@ router.post("/cat_page", function (req, res, next) {
 	oracle.connect(res);
 });
 
-/* Get Sample Page */
+/* Get Sample Page @@@@@@@  OLD  8/2以降のアップデート後に削除OK*/
 router.post("/sample_page", function (req, res, next) {
 	let sty_num = req.body.style_number;
 	let sql = `SELECT * FROM CSNET.CS_SAMPLE WHERE STYLE_NUM = ${sty_num}`;
+	let oracle = new Orcl(sql);
+	oracle.connect(res);
+});
+
+/* Get Sample Page new*/
+router.post("/sample_page_new/", function (req, res, next) {
+	let sty_num = req.body.style_number;
+	let sql = `SELECT * FROM CSNET.V_CS_SAMPLE_MST WHERE STY_NUM = '${sty_num}'`;
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
@@ -378,12 +420,15 @@ router.post("/set_style/", function (req, res, next) {
   Get campaign Information
 */
 router.post("/camp_alert/", function (req, res, next) {
-	let sty_num = req.body.style_number;
-
-	// New
-	let sql = `SELECT * FROM \
-  CSNET.CS_CAMP_BTN CCB \
-  WHERE CCB.STY = ${sty_num}`;
+	let sql;
+	if (!req.body.sql) {
+		let sty_num = req.body.style_number;
+		sql = `SELECT * FROM \
+		CSNET.CS_CAMP_BTN CCB \
+		WHERE CCB.STY = ${sty_num}`;
+	} else {
+		sql = req.body.sql;
+	}
 
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
@@ -461,6 +506,25 @@ router.post("/prc_inv", function (req, res, next) {
 	let oracle = new Orcl(sql);
 	oracle.connect(res);
 });
+
+/*
+  GET L_PLUS INIT (test code)
+*/
+router.post("/lplus_ini/", function (req, res, next) {
+    let sql;
+    if(!req.body.sql){
+      sql = `SELECT * FROM \
+      CSNET.CS_LP_CTL \
+      ORDER BY ID ASC`;
+    }else{
+      sql = req.body.sql;
+	  console.log(sql);
+    }
+	
+    let oracle = new Orcl(sql);
+    oracle.connect(res);
+});
+
 /*
   API Response Test (Get Method).
 */
