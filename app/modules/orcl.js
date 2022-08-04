@@ -1,5 +1,5 @@
 var oracledb = require("oracledb");
-
+/*
 try {
   oracledb.initOracleClient({
     libDir: 'C:\\Dev\\instantclient'
@@ -9,6 +9,7 @@ try {
   console.error(err);
   // process.exit(1);
 }
+*/
 /*
   Oracle Connection Class
 */
