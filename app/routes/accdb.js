@@ -10,7 +10,7 @@ router.get('/', function (req, res, next) {
   const ADODB = require('node-adodb');
   const connection = ADODB.open('Provider=Microsoft.ACE.OLEDB.12.0;Data Source=\\\\jpweb001\\wwwroot\\' + dbPath + ';Persist Security Info=False;');
   // 非同期関数の定義
-  async function query() {
+  (async function query() {
     try {
       //console.log("it works");
       let data = await connection.query('SELECT * FROM ' + tableName);
@@ -20,8 +20,7 @@ router.get('/', function (req, res, next) {
       console.error(error);
       res.send(error);
     }
-  }
-  query();
+  }())
 
 });
 
@@ -34,7 +33,7 @@ router.post('/', function (req, res, next) {
   const ADODB = require('node-adodb');
   const connection = ADODB.open('Provider=Microsoft.ACE.OLEDB.12.0;Data Source=\\\\jpweb001\\wwwroot\\' + dbPath + ';Persist Security Info=False;');
 
-  async function execute() {
+  (async function execute() {
     try {
       let data = await connection.execute(req.body.sql)
       res.send("the following SQL executed. \n " + res.body.sql);
@@ -42,9 +41,7 @@ router.post('/', function (req, res, next) {
       console.error(error);
       res.send(error);
     }
-  }
-
-  execute();
+  }())
 
   // res.send("post method detected.")
 })

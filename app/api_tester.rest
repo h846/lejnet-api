@@ -9,11 +9,12 @@ content-type: application/json
 {"cust_num": "205455"}
 
 ###
-<<<<<<< HEAD
+GET http://localhost:3001/
+###
 POST http://localhost:3001/csnet/sample_item/
-=======
-POST http://localhost:3001/excel/labelprint
-content-type: application/json
 
-{"printdata":"aaaabbbbb"}
->>>>>>> add3b8392a31fdf794c973e6312ee2d1da55ac21
+###
+POST http://localhost:3001/oracle/camp_data/
+
+###
+GET http://localhost:3001/accdb/?db=ISNet\UMT\db\umt.accdb&table=master
