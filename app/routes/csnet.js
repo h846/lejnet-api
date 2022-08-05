@@ -2,6 +2,13 @@ var express = require("express");
 var router = express.Router();
 var Orcl = require('../modules/orcl')
 
+/* Get Catalog List */
+router.post('/catalogs', function (req, res, next) {
+  let sql = `SELECT * FROM CSNET.CS_CAT_IND ORDER BY index_num DESC`;
+  let oracle = new Orcl(sql);
+  oracle.connect(res);
+})
+
 /* SS BIBLE DATA */
 router.post("/ss-bible", function (req, res, next) {
 	// sql param exist -> UPDATE, DELTE, etc..
