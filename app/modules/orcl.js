@@ -1,5 +1,7 @@
 var oracledb = require("oracledb");
-/*
+var credential = require("./credential");
+console.log()
+
 try {
   oracledb.initOracleClient({
     libDir: 'C:\\Dev\\instantclient'
@@ -9,7 +11,7 @@ try {
   console.error(err);
   // process.exit(1);
 }
-*/
+
 /*
   Oracle Connection Class
 */
@@ -21,11 +23,9 @@ class Orcl {
 	async connect(res) {
 		let con;
 		try {
-			con = await oracledb.getConnection({
-				user: "nodeora",
-				password: "nodeora",
-				connectionString: "LEJPPDORA01:1521/orcl.leinternal.com",
-			});
+			con = await oracledb.getConnection(
+				credential()
+			);
 
 			try {
 				//SQL文がSELECTから始まっていたら
